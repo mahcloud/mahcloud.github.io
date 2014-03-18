@@ -267,6 +267,44 @@
 <p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p></div>
 	</article>
 
+	<article class="post">
+		
+			<h1><a href="/2014/03/18/javascript-canvas-game-monster-gates/">Javascript Canvas Game Monster Gates</a></h1>
+		
+		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena. First, add the gates array.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>gates</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span>
+		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>),</span>
+		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>),</span>
+		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>),</span>
+		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span>
+	<span class='p'>);</span>
+</code></pre></div>
+<p>Then we want to spawn a monster randomly.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>spawnMonster</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>gate</span> <span class='o'>=</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>floor</span><span class='p'>(</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='mi'>4</span><span class='p'>)</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>;</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='nx'>gates</span><span class='p'>[</span><span class='nx'>gate</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>];</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='nx'>gates</span><span class='p'>[</span><span class='nx'>gate</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>1</span><span class='p'>];</span>
+<span class='p'>};</span>
+</code></pre></div>
+<p>And change this in the slayMonster function</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+</code></pre></div>
+<p>for</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>spawnMonster</span><span class='p'>();</span>
+</code></pre></div>
+<p>Added bonus, we can have the monster start at a spawn point by adding.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>spawnMonster</span><span class='p'>();</span>
+</code></pre></div>
+<p>And change the monster array values.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='o'>-</span><span class='mi'>100</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='o'>-</span><span class='mi'>100</span><span class='p'>;</span>
+</code></pre></div>
+<p>This means that the monster will be drawn off the screen before it is spawned.</p>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster-gates">download</a> this example.</p></div>
+	</article>
+
 </ul>
 
 			</div>
