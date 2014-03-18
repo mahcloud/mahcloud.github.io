@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Javascript Canvas Game Slay Monster</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014/03/18/javascript-canvas-game-slay-monster/">Javascript Canvas Game Slay Monster</a></h1>
+	
+	<div class="post-content"><p>Slaying monsters in our javascript arena.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>slayMonster</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='nx'>isTouching</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>))</span> <span class='p'>{</span>
+		<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+		<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+	<span class='p'>}</span>
+<span class='p'>};</span>
+
+<span class='kd'>var</span> <span class='nx'>isTouching</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>(</span><span class='nx'>a</span><span class='p'>,</span> <span class='nx'>b</span><span class='p'>)</span> <span class='p'>{</span>
+	<span class='kd'>var</span> <span class='nx'>ret</span> <span class='o'>=</span> <span class='kc'>false</span><span class='p'>;</span>
+	<span class='k'>if</span><span class='p'>((</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>)))</span> <span class='p'>{</span>
+		<span class='nx'>ret</span> <span class='o'>=</span> <span class='kc'>true</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>return</span> <span class='nx'>ret</span><span class='p'>;</span>
+<span class='p'>};</span>
+</code></pre></div>
+<p>Slay monster function simply checks if the hero and monster are touching and then respawns the monster at location 100, 100.</p>
+
+<p>The slayMonster function should be called in the main function.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>slayMonster</span><span class='p'>();</span>
+</code></pre></div>
+<p>It’s more fun if we had some stats on how many monsters we have slain. Add a variable to the hero array to keep track of how many monsters have been slain.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
+</code></pre></div>
+<p>Now in the slayMonsters if isTouching block add an incrementer.</p>
+<div class='highlight'><pre><code class='javascript'><span class='o'>++</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span><span class='p'>;</span>
+</code></pre></div>
+<p>We need to show this on the screen. Add an HTML element to store the stat in. We’ll also need jQuery, a helpful javascript library.</p>
+<div class='highlight'><pre><code class='html'><span class='nt'>&lt;div</span> <span class='na'>id=</span><span class='s'>&quot;monsters_slain_header&quot;</span><span class='nt'>&gt;</span>
+	<span class='nt'>&lt;span&gt;</span>Monsters Slain: <span class='nt'>&lt;/span&gt;&lt;span</span> <span class='na'>id=</span><span class='s'>&quot;monsters_slain&quot;</span><span class='nt'>&gt;</span>0<span class='nt'>&lt;/span&gt;</span>
+<span class='nt'>&lt;/div&gt;</span>
+<span class='nt'>&lt;script </span><span class='na'>src=</span><span class='s'>&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class='nt'>&gt;&lt;/script&gt;</span>
+</code></pre></div>
+<p>To push the monsters slain count to the html element, add this to your render function.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>$</span><span class='p'>(</span><span class='s1'>&#39;#monsters_slain&#39;</span><span class='p'>).</span><span class='nx'>html</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span><span class='p'>);</span>
+</code></pre></div>
+<p>Let’s add some styling to our stat bar.</p>
+<div class='highlight'><pre><code class='css'><span class='nf'>#monsters_slain_header</span> <span class='p'>{</span> <span class='k'>color</span><span class='o'>:</span> <span class='nb'>white</span><span class='p'>;</span> <span class='k'>font-weight</span><span class='o'>:</span> <span class='k'>bold</span><span class='p'>;</span> <span class='k'>font-size</span><span class='o'>:</span> <span class='m'>18px</span><span class='p'>;</span> <span class='k'>margin</span><span class='o'>:</span> <span class='m'>10px</span> <span class='m'>15px</span><span class='p'>;</span> <span class='p'>}</span>
+</code></pre></div>
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p></div>
+	<p class="meta">Posted on <span class="postdate">Mar 18, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>

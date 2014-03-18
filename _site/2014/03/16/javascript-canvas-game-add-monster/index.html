@@ -117,7 +117,7 @@
 <div class='highlight'><pre><code class='javascript'><span class='nx'>moveMonster</span><span class='p'>();</span>
 </code></pre></div>
 <p>Add the following to the monster array.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>50</span><span class='p'>;</span>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
 <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 </code></pre></div>
@@ -135,24 +135,24 @@
 	<span class='k'>delete</span> <span class='nx'>keysDown</span><span class='p'>[</span><span class='nx'>e</span><span class='p'>.</span><span class='nx'>keyCode</span><span class='p'>];</span>
 <span class='p'>},</span> <span class='kc'>false</span><span class='p'>);</span>
 
-<span class='kd'>var</span> <span class='nx'>moveHero</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>(</span><span class='nx'>modifier</span><span class='p'>)</span> <span class='p'>{</span>
+<span class='kd'>var</span> <span class='nx'>moveHero</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
 	<span class='k'>if</span><span class='p'>(</span><span class='mi'>38</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding up</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>*</span> <span class='nx'>modifier</span><span class='p'>;</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 	<span class='p'>}</span>
 	<span class='k'>if</span><span class='p'>(</span><span class='mi'>40</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding down</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>*</span> <span class='nx'>modifier</span><span class='p'>;</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 	<span class='p'>}</span>
 	<span class='k'>if</span><span class='p'>(</span><span class='mi'>37</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding left</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>*</span> <span class='nx'>modifier</span><span class='p'>;</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 	<span class='p'>}</span>
 	<span class='k'>if</span><span class='p'>(</span><span class='mi'>39</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding right</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>*</span> <span class='nx'>modifier</span><span class='p'>;</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
 	<span class='p'>}</span>
 	<span class='nx'>resetObjectLocation</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>);</span>
 <span class='p'>};</span>
 </code></pre></div>
 <p>Don’t forget to add speed to your hero array.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>250</span><span class='p'>;</span>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
 </code></pre></div>
 <p>And add moveHero method call to your main method.</p>
 <div class='highlight'><pre><code class='javascript'><span class='nx'>moveHero</span><span class='p'>();</span>
