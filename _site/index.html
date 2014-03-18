@@ -38,6 +38,47 @@
 				
 	<article class="post">
 		
+			<h1><a href="/2014/03/18/javascript-canvas-game-pokemon/">Javascript Canvas Game Pokemon</a></h1>
+		
+		<div class="post-content"><p>Wouldn’t it be more fun if we were dealing with Pokemon instead of an Ogre?</p>
+
+<p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/1.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/2.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/3.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/4.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/5.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/6.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/7.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/8.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/9.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/10.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/11.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/12.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/13.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/14.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/15.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/16.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/17.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/18.png?raw=true" alt="Background Image" /></p>
+
+<p>These are the image dimensions for the pokemon.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>pokemon_dimensions</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>29</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>21</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>24</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>31</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>30</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>30</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>26</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>28</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>30</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>24</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>30</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>24</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>26</span><span class='p'>),</span>
+	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>18</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>)</span>
+<span class='p'>);</span>
+</code></pre></div>
+<p>Add this to your spawnMonster function.</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>pokemon</span> <span class='o'>=</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>floor</span><span class='p'>(</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='mi'>18</span><span class='p'>)</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>;</span>
+<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/pokemon/&quot;</span><span class='o'>+</span><span class='nx'>pokemon</span><span class='o'>+</span><span class='s2'>&quot;.png&quot;</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='nx'>pokemon_dimensions</span><span class='p'>[</span><span class='nx'>pokemon</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>];</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='nx'>pokemon_dimensions</span><span class='p'>[</span><span class='nx'>pokemon</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>1</span><span class='p'>];</span>
+</code></pre></div>
+<p>Let’s rename some methods. monstersSlain should be pokemonCaught. slayMonster should be catchPokemon.</p>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p></div>
+	</article>
+
+	<article class="post">
+		
 			<h1><a href="/2014/03/18/javascript-canvas-game-monster-gates/">Javascript Canvas Game Monster Gates</a></h1>
 		
 		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena. First, add the gates array.</p>
