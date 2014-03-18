@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Javascript Canvas Game Create a Page</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014/03/16/javascript-canvas-game-create-a-page/">Javascript Canvas Game Create a Page</a></h1>
+	
+	<div class="post-content"><p>First create an index page. You can name this file anything you want as long as it is saved as an html extension. This is where your game lives. You can see it by opening your index page.</p>
+<div class='highlight'><pre><code class='html'><span class='cp'>&lt;!DOCTYPE html&gt;</span>
+<span class='nt'>&lt;html</span> <span class='na'>lang=</span><span class='s'>&quot;en&quot;</span><span class='nt'>&gt;</span>
+	<span class='nt'>&lt;head&gt;</span>
+		<span class='nt'>&lt;meta</span> <span class='na'>charset=</span><span class='s'>&quot;utf-8&quot;</span><span class='nt'>&gt;</span>
+		<span class='nt'>&lt;title&gt;</span>Simple Canvas Game<span class='nt'>&lt;/title&gt;</span>
+		<span class='nt'>&lt;style&gt;</span>
+			<span class='nt'>html</span><span class='o'>,</span><span class='nt'>body</span> <span class='p'>{</span> <span class='k'>margin</span><span class='o'>:</span> <span class='m'>0px</span><span class='p'>;</span> <span class='k'>padding</span><span class='o'>:</span> <span class='m'>0px</span><span class='p'>;</span> <span class='p'>}</span>
+			<span class='nt'>body</span> <span class='p'>{</span> <span class='k'>background-image</span><span class='o'>:</span> <span class='sx'>url(images/background.jpg)</span><span class='p'>;</span> <span class='p'>}</span>
+		<span class='nt'>&lt;/style&gt;</span>
+	<span class='nt'>&lt;/head&gt;</span>
+	<span class='nt'>&lt;body&gt;</span>
+		<span class='nt'>&lt;script </span><span class='na'>src=</span><span class='s'>&quot;js/main.js&quot;</span><span class='nt'>&gt;&lt;/script&gt;</span>
+	<span class='nt'>&lt;/body&gt;</span>
+<span class='nt'>&lt;/html&gt;</span>
+</code></pre></div>
+<p>It won’t look like much of anything yet. Let’s fix that by adding a background image. Your index page says the background image is located at images/background.jpg. So let’s create a folder in the same place as your index page and add a background.jpg image in it. <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/background.jpg?raw=true" alt="Background Image" /></p>
+
+<p>The game will be built on a javascript engine using acanvas. First add a js folder and put a main.js file in it. Adding the following with create a canvas with dimensions 979pixels X 606pixels and add it to the index page.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>canvas</span> <span class='o'>=</span> <span class='nb'>document</span><span class='p'>.</span><span class='nx'>createElement</span><span class='p'>(</span><span class='s2'>&quot;canvas&quot;</span><span class='p'>);</span>
+<span class='kd'>var</span> <span class='nx'>ctx</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>getContext</span><span class='p'>(</span><span class='s2'>&quot;2d&quot;</span><span class='p'>);</span>
+<span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>979</span><span class='p'>;</span>
+<span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>606</span><span class='p'>;</span>
+<span class='nb'>document</span><span class='p'>.</span><span class='nx'>body</span><span class='p'>.</span><span class='nx'>appendChild</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>);</span>
+</code></pre></div>
+<p>The following will create a background image and draw it on the canvas.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>bgImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
+<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>onload</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>bgImage</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>);</span>
+<span class='p'>};</span>
+<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/canvas_background.png&quot;</span><span class='p'>;</span>
+</code></pre></div>
+<p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/canvas_background.png?raw=true" alt="Background Image" /></p>
+
+<p>You’ll notice that there is an onload function called. It takes time for javascript to load up the background image.</p>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/start">download</a> this example.</p></div>
+	<p class="meta">Posted on <span class="postdate">Mar 16, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>
