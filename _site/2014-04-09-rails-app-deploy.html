@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>First rails deploy</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014-04-09-rails-app-deploy.html">First rails deploy</a></h1>
+	
+	<div class="post-content"><p>I’ve been working on learning how to deploy a rails app without the help of <a href="https://www.heroku.com">Heroku</a>. You might ask why I would want to do that. That’s a really good question that I ask myself everytime I can’t figure things out for hours on end. I won’t answer that question now. I’ll leave that for the last post I make on RailsDeploy.</p>
+
+<p>My teacher is the author of <a href="https://railsdeploymentbook.com/">Fearless Rails Deployment</a>. If you preorder his book, he’ll let you view the draft so far. I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.</p>
+
+<p>First, I needed to install unicorn as my rails server. This part was a lot easier than I thought it was going to be. After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
+<div class='highlight'><pre><code class='bash'>vim /etc/unicorn/mahcloud.rb
+</code></pre></div><div class='highlight'><pre><code class='ruby'><span class='n'>pid</span> <span class='s1'>&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
+<span class='n'>working_directory</span> <span class='s1'>&#39;/home/root/mahcloud/&#39;</span>
+</code></pre></div>
+<p>The config file has a little more in it than that.</p></div>
+	<p class="meta">Posted on <span class="postdate">Apr 09, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>
