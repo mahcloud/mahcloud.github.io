@@ -38,6 +38,22 @@
 				
 	<article class="post">
 		
+			<h1><a href="/2014/04/09/rails-app-deploy/">First rails deploy</a></h1>
+		
+		<div class="post-content"><p>I’ve been working on learning how to deploy a rails app without the help of <a href="https://www.heroku.com">Heroku</a>. You might ask why I would want to do that. That’s a really good question that I ask myself everytime I can’t figure things out for hours on end. I won’t answer that question now. I’ll leave that for the last post I make on RailsDeploy.</p>
+
+<p>My teacher is the author of <a href="https://railsdeploymentbook.com/">Fearless Rails Deployment</a>. If you preorder his book, he’ll let you view the draft so far. I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.</p>
+
+<p>First, I needed to install unicorn as my rails server. This part was a lot easier than I thought it was going to be. After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
+<div class='highlight'><pre><code class='bash'>vim /etc/unicorn/mahcloud.rb
+</code></pre></div><div class='highlight'><pre><code class='ruby'><span class='n'>pid</span> <span class='s1'>&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
+<span class='n'>working_directory</span> <span class='s1'>&#39;/home/root/mahcloud/&#39;</span>
+</code></pre></div>
+<p>The config file has a little more to it than that.</p></div>
+	</article>
+
+	<article class="post">
+		
 			<h1><a href="/2014/03/18/javascript-canvas-game-pokemon/">Javascript Canvas Game Pokemon</a></h1>
 		
 		<div class="post-content"><p>Wouldn’t it be more fun if we were dealing with Pokemon instead of an Ogre?</p>

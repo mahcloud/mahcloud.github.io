@@ -27,7 +27,7 @@ pid '/home/root/mahcloud/tmp/unicorn.pid'
 working_directory '/home/root/mahcloud/'
 {% endhighlight %}
 
-The config file has a little more in it than that.
+The config file has a little more to it than that.
 
 [heroku]: https://www.heroku.com
 [fearless]: https://railsdeploymentbook.com/

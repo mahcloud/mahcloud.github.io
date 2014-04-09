@@ -7,6 +7,23 @@
 		<atom:link href="http://www.mikehoffert.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>First rails deploy</title>
+				<description>&lt;p&gt;I’ve been working on learning how to deploy a rails app without the help of &lt;a href=&quot;https://www.heroku.com&quot;&gt;Heroku&lt;/a&gt;. You might ask why I would want to do that. That’s a really good question that I ask myself everytime I can’t figure things out for hours on end. I won’t answer that question now. I’ll leave that for the last post I make on RailsDeploy.&lt;/p&gt;
+
+&lt;p&gt;My teacher is the author of &lt;a href=&quot;https://railsdeploymentbook.com/&quot;&gt;Fearless Rails Deployment&lt;/a&gt;. If you preorder his book, he’ll let you view the draft so far. I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.&lt;/p&gt;
+
+&lt;p&gt;First, I needed to install unicorn as my rails server. This part was a lot easier than I thought it was going to be. After adding the gem and installing it, I just made a unicorn config file and ran unicorn.&lt;/p&gt;
+&lt;div class=&#39;highlight&#39;&gt;&lt;pre&gt;&lt;code class=&#39;bash&#39;&gt;vim /etc/unicorn/mahcloud.rb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#39;highlight&#39;&gt;&lt;pre&gt;&lt;code class=&#39;ruby&#39;&gt;&lt;span class=&#39;n&#39;&gt;pid&lt;/span&gt; &lt;span class=&#39;s1&#39;&gt;&amp;#39;/home/root/mahcloud/tmp/unicorn.pid&amp;#39;&lt;/span&gt;
+&lt;span class=&#39;n&#39;&gt;working_directory&lt;/span&gt; &lt;span class=&#39;s1&#39;&gt;&amp;#39;/home/root/mahcloud/&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The config file has a little more to it than that.&lt;/p&gt;</description>
+				<pubDate>Wed, 09 Apr 2014 18:25:00 +0000</pubDate>
+				<link>http://www.mikehoffert.com/2014/04/09/rails-app-deploy/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2014/04/09/rails-app-deploy/</guid>
+			</item>
+		
+			<item>
 				<title>Javascript Canvas Game Pokemon</title>
 				<description>&lt;p&gt;Wouldn’t it be more fun if we were dealing with Pokemon instead of an Ogre?&lt;/p&gt;
 
