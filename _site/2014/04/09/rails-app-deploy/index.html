@@ -43,6 +43,11 @@
 
 <p>My teacher is the author of <a href="https://railsdeploymentbook.com/">Fearless Rails Deployment</a>. If you preorder his book, he’ll let you view the draft so far. I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.</p>
 
+<p>I deployed using capistrano. This will create the capistrano files:</p>
+<div class='highlight'><pre><code class='bash'>cap install
+</code></pre></div>
+<p>To use capistrano you’ll need to be able to ssh authenticate with ssh key instead of password. <a href="http://gorails.com/deploy/ubuntu/12.04">Here</a> is a great tutorial on how to do that.</p>
+
 <p>First, I needed to install unicorn as my rails server. This part was a lot easier than I thought it was going to be. After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
 <div class='highlight'><pre><code class='bash'>vim /etc/unicorn/mahcloud.rb
 </code></pre></div><div class='highlight'><pre><code class='ruby'><span class='n'>pid</span> <span class='s1'>&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
