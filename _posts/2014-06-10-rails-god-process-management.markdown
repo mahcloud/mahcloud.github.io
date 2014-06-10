@@ -61,8 +61,11 @@ Okay, so I still feel lost enough not to know where to go. Since, pty doesn't so
 Turning on pty with `set :pty, true` or `set :tty, true` in config/deploy.rb file gave the same results.
 
 
+Okay, I think was on the wrong track with the pty thing. I had to add my user as a [passwordless sudo][passwordless] user for deploying. That took care of the problem.
+
 [rabbit]: http://www.rabbitmq.com/
 [god]: http://godrb.com/
 [sshkit]: https://github.com/capistrano/sshkit
 [ttyvspty]: http://ubuntuforums.org/archive/index.php/t-833765.html
 [ttystack]: http://stackoverflow.com/questions/4426280/what-do-pty-and-tty-mean
+[passwordless]: http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password

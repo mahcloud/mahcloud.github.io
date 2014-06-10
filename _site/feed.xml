@@ -51,6 +51,8 @@ I found &lt;a href=&quot;http://ubuntuforums.org/archive/index.php/t-833765.html
 
 &lt;p&gt;Turning on pty with &lt;code&gt;set :pty, true&lt;/code&gt; or &lt;code&gt;set :tty, true&lt;/code&gt; in config/deploy.rb file gave the same results.&lt;/p&gt;
 
+&lt;p&gt;Okay, I think was on the wrong track with the pty thing. I had to add my user as a &lt;a href=&quot;http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password&quot;&gt;passwordless sudo&lt;/a&gt; user for deploying. That took care of the problem.&lt;/p&gt;
+
 </description>
 				<pubDate>Tue, 10 Jun 2014 04:25:00 -0500</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/10/rails-god-process-management/</link>

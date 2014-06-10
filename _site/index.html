@@ -83,6 +83,8 @@ I found <a href="http://ubuntuforums.org/archive/index.php/t-833765.html">TTY an
 
 <p>Turning on pty with <code>set :pty, true</code> or <code>set :tty, true</code> in config/deploy.rb file gave the same results.</p>
 
+<p>Okay, I think was on the wrong track with the pty thing. I had to add my user as a <a href="http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password">passwordless sudo</a> user for deploying. That took care of the problem.</p>
+
 </div>
 	</article>
 
