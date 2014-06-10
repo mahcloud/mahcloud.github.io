@@ -7,6 +7,57 @@
 		<atom:link href="http://www.mikehoffert.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Ruby God - Process Management</title>
+				<description>&lt;p&gt;So I’m back after a few months.&lt;/p&gt;
+
+&lt;p&gt;The project I was working on that needed a custom install was not received well. Originally everyone liked it but when customers that didn’t understand it started to complain, management just wanted it shutdown. Bad data is better than no data at all I guess.&lt;/p&gt;
+
+&lt;p&gt;Well, I’m back and onto a new project that needs rails deployment. This time it is a reporting tools. In order to not slow down the live orders/quotes table with reporting, I’m building a seperate database of order/quote data that should be populated identical to the live database. I’m using &lt;a href=&quot;http://www.rabbitmq.com/&quot;&gt;rabbitMQ&lt;/a&gt; to transfer a hash of the data when an order or quote is changed. This way it doesn’t slow down the transaction or database on the live site. The hash is put in a queue by the rabbit exchange. Our reporting application will then consume that data and save the calculations to a postgres database.&lt;/p&gt;
+
+&lt;p&gt;Now that we have all the background story covered, I’ve got the RoR application deploying live and to a beta staging environment. When I deploy to these boxes, I need a zero downtime switch to the new code. Since the reporting server is constantly consuming data from rabbitMQ, it would be very bad if it missed any of these queued items. I’ll be using &lt;a href=&quot;http://godrb.com/&quot;&gt;god&lt;/a&gt; to keep the rabbitMQ listener up and running even during a code deployment. So, the line I need to add to my capistrano deployment is:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo /var/god/.rvm/bin/god restart APP-NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I’m having a little problem here.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;Command: /usr/bin/env sudo
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -h &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -K &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -k &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -V
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -v &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -l &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-U user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	  
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	          &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-r role&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-t &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-C num&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	  
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	          prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;VAR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;value&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-i&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;-s&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&amp;lt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&amp;gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -e &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-r role&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-t &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-C num&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	    
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	        prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; file ...
+cap aborted!
+SSHKit::Command::Failed: sudo &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;status: 1
+sudo stdout: Nothing written
+sudo stderr: usage: sudo -h &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -K &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -k &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -V
+/gems/sshkit-1.4.0/lib/sshkit/command.rb:98:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;exit_status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;First thought, this exact script does work on the server by manually entering it.&lt;/p&gt;
+
+&lt;p&gt;Next, what is &lt;a href=&quot;https://github.com/capistrano/sshkit&quot;&gt;SSHKit&lt;/a&gt;?
+It is a gem capistrano uses to make ssh connections to all the different environments I will be deploying to.&lt;/p&gt;
+
+&lt;p&gt;Exit status 1 just means there was an error with no more explanation than that.
+So, I’m a little stuck here. Bash doesn’t give any specific error code. I would guess it has something to do using sudo without a password on an ssh connection using an ssh-key for authentication. I asked my boss if he had any suggestions. He said &lt;code&gt;does the deploy user have password-less sudo rights?&lt;/code&gt;. It looks like there is something called pty and tty. So what are they and what’s the difference?
+I found &lt;a href=&quot;http://ubuntuforums.org/archive/index.php/t-833765.html&quot;&gt;TTY and PTY&lt;/a&gt; and &lt;a href=&quot;http://stackoverflow.com/questions/4426280/what-do-pty-and-tty-mean&quot;&gt;Teletype&lt;/a&gt;. Still very confused why I would need a virtual terminal for deploying and if I capistrano needs a virtual terminal to run commands how it did anything with out it. Maybe it was already using one and I can just set it to a different one.&lt;/p&gt;
+
+&lt;p&gt;Okay, so I still feel lost enough not to know where to go. Since, pty doesn’t sound harmful at all, I guess I will just turn it on and see what happens.&lt;/p&gt;
+
+&lt;p&gt;Turning on pty with &lt;code&gt;set :pty, true&lt;/code&gt; or &lt;code&gt;set :tty, true&lt;/code&gt; in config/deploy.rb file gave the same results.&lt;/p&gt;
+
+</description>
+				<pubDate>Tue, 10 Jun 2014 04:25:00 -0500</pubDate>
+				<link>http://www.mikehoffert.com/2014/06/10/rails-god-process-management/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/10/rails-god-process-management/</guid>
+			</item>
+		
+			<item>
 				<title>First rails deploy</title>
 				<description>&lt;p&gt;I’ve been working on learning how to deploy a rails app without the help of &lt;a href=&quot;https://www.heroku.com&quot;&gt;Heroku&lt;/a&gt;.
 You might ask why I would want to do that.
