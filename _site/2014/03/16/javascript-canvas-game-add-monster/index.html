@@ -39,143 +39,125 @@
 	
 		<h1><a href="/2014/03/16/javascript-canvas-game-add-monster/">Javascript Canvas Game Add Monster</a></h1>
 	
-	<div class="post-content"><p>Let’s add a monster to our javascript arena.
-You’ll need a monster.png image.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
-<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">monsterImage</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
-<span class="p">};</span>
-<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/monster.png&quot;</span><span class="p">;</span></code></pre></div>
-
+	<div class="post-content"><p>Let’s add a monster to our javascript arena. You’ll need a monster.png image.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>monsterImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
+<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>onload</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>monsterImage</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>);</span>
+<span class='p'>};</span>
+<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/monster.png&quot;</span><span class='p'>;</span>
+</code></pre></div>
 <p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/monster.png?raw=true" alt="Background Image" /></p>
 
-<p>Next, let’s make them move.
-We’ll make it so we can control the hero’s movement.
-First, we need to update the images so they load every time the hero and monster move.
-Change the image code to:</p>
+<p>Next, let’s make them move. We’ll make it so we can control the hero’s movement. First, we need to update the images so they load every time the hero and monster move. Change the image code to:</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>bgImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
+<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/canvas_background.png&quot;</span><span class='p'>;</span>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
-<span class="nx">bgImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/canvas_background.png&quot;</span><span class="p">;</span>
+<span class='kd'>var</span> <span class='nx'>heroImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
+<span class='nx'>heroImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/hero.png&quot;</span><span class='p'>;</span>
 
-<span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
-<span class="nx">heroImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/hero.png&quot;</span><span class="p">;</span>
-
-<span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
-<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/monster.png&quot;</span><span class="p">;</span></code></pre></div>
-
+<span class='kd'>var</span> <span class='nx'>monsterImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
+<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/monster.png&quot;</span><span class='p'>;</span>
+</code></pre></div>
 <p>Basically removing the onload functions.</p>
 
 <p>We will then reload the images every few miliseconds with:</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>hero</span> <span class='o'>=</span> <span class='p'>{};</span>
+<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>32</span><span class='p'>;</span>
+<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>32</span><span class='p'>;</span>
+<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span> <span class='o'>-</span> <span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>);</span>
+<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span> <span class='o'>-</span> <span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>);</span>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="p">{};</span>
-<span class="nx">hero</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
-<span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
-<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+<span class='kd'>var</span> <span class='nx'>monster</span> <span class='o'>=</span> <span class='p'>{};</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>32</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>30</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
 
-<span class="kd">var</span> <span class="nx">monster</span> <span class="o">=</span> <span class="p">{};</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">32</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class='kd'>var</span> <span class='nx'>render</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>clearRect</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>);</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>bgImage</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>);</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>monsterImage</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span><span class='p'>);</span>
+	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>heroImage</span><span class='p'>,</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span><span class='p'>,</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span><span class='p'>);</span>
+<span class='p'>};</span>
 
-<span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="nx">ctx</span><span class="p">.</span><span class="nx">clearRect</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
-	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">bgImage</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">monsterImage</span><span class="p">,</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">heroImage</span><span class="p">,</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-<span class="p">};</span>
+<span class='kd'>var</span> <span class='nx'>main</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>render</span><span class='p'>();</span>
+<span class='p'>};</span>
 
-<span class="kd">var</span> <span class="nx">main</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">render</span><span class="p">();</span>
-<span class="p">};</span>
-
-<span class="nx">setInterval</span><span class="p">(</span><span class="nx">main</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span></code></pre></div>
-
+<span class='nx'>setInterval</span><span class='p'>(</span><span class='nx'>main</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>);</span>
+</code></pre></div>
 <p>Now let’s make our monster move.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>moveMonster</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span><span class='p'>;</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span><span class='p'>;</span>
+	<span class='nx'>resetObjectLocation</span><span class='p'>(</span><span class='nx'>monster</span><span class='p'>);</span>
+<span class='p'>};</span>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">moveMonster</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span><span class="p">;</span>
-	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span><span class="p">;</span>
-	<span class="nx">resetObjectLocation</span><span class="p">(</span><span class="nx">monster</span><span class="p">);</span>
-<span class="p">};</span>
+<span class='kd'>var</span> <span class='nx'>updateMonsterDirection</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span> <span class='o'>=</span> <span class='p'>((</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>&lt;</span> <span class='mf'>0.5</span><span class='p'>)</span><span class='o'>?</span> <span class='o'>-</span><span class='mi'>1</span> <span class='o'>:</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span><span class='o'>=</span> <span class='p'>((</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>&lt;</span> <span class='mf'>0.5</span><span class='p'>)</span><span class='o'>?</span> <span class='o'>-</span><span class='mi'>1</span> <span class='o'>:</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+<span class='p'>};</span>
 
-<span class="kd">var</span> <span class="nx">updateMonsterDirection</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span> <span class="o">=</span> <span class="p">((</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-	<span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span><span class="o">=</span> <span class="p">((</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="kd">var</span> <span class="nx">resetObjectLocation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span><span class="p">))</span> <span class="p">{</span>
-		<span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="p">{</span>
-		<span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-
+<span class='kd'>var</span> <span class='nx'>resetObjectLocation</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>)</span> <span class='p'>{</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;</span> <span class='mi'>0</span><span class='p'>)</span> <span class='p'>{</span>
+		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;</span> <span class='mi'>0</span><span class='p'>)</span> <span class='p'>{</span>
+		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&gt;</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>))</span> <span class='p'>{</span>
+		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&gt;</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='p'>{</span>
+		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>;</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+</code></pre></div>
 <p>And add the following to the main method.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">moveMonster</span><span class="p">();</span></code></pre></div>
-
+<div class='highlight'><pre><code class='javascript'><span class='nx'>moveMonster</span><span class='p'>();</span>
+</code></pre></div>
 <p>Add the following to the monster array.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-<span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span></code></pre></div>
-
+<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+</code></pre></div>
 <p>This goes at the bottom of your file to tell the monster to change direction every half second</p>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>setInterval</span><span class='p'>(</span><span class='nx'>updateMonsterDirection</span><span class='p'>,</span> <span class='mi'>500</span><span class='p'>;</span>
+</code></pre></div>
+<p>But what if we wanted to control the hero using the arrow keys? It would be the same logic just based on input from the keyboard. Here’s how we receive input from the keyboard.</p>
+<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>keysDown</span> <span class='o'>=</span> <span class='p'>{};</span>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">setInterval</span><span class="p">(</span><span class="nx">updateMonsterDirection</span><span class="p">,</span> <span class="mi">500</span><span class="p">;</span></code></pre></div>
+<span class='nx'>addEventListener</span><span class='p'>(</span><span class='s2'>&quot;keydown&quot;</span><span class='p'>,</span> <span class='kd'>function</span> <span class='p'>(</span><span class='nx'>e</span><span class='p'>)</span> <span class='p'>{</span>
+	<span class='nx'>keysDown</span><span class='p'>[</span><span class='nx'>e</span><span class='p'>.</span><span class='nx'>keyCode</span><span class='p'>]</span> <span class='o'>=</span> <span class='kc'>true</span><span class='p'>;</span>
+<span class='p'>},</span> <span class='kc'>false</span><span class='p'>);</span>
 
-<p>But what if we wanted to control the hero using the arrow keys?
-It would be the same logic just based on input from the keyboard.
-Here’s how we receive input from the keyboard.</p>
+<span class='nx'>addEventListener</span><span class='p'>(</span><span class='s2'>&quot;keyup&quot;</span><span class='p'>,</span> <span class='kd'>function</span> <span class='p'>(</span><span class='nx'>e</span><span class='p'>)</span> <span class='p'>{</span>
+	<span class='k'>delete</span> <span class='nx'>keysDown</span><span class='p'>[</span><span class='nx'>e</span><span class='p'>.</span><span class='nx'>keyCode</span><span class='p'>];</span>
+<span class='p'>},</span> <span class='kc'>false</span><span class='p'>);</span>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">keysDown</span> <span class="o">=</span> <span class="p">{};</span>
-
-<span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;keydown&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">keysDown</span><span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-
-<span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;keyup&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">delete</span> <span class="nx">keysDown</span><span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">];</span>
-<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-
-<span class="kd">var</span> <span class="nx">moveHero</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="mi">38</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding up</span>
-		<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">-=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="mi">40</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding down</span>
-		<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="mi">37</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding left</span>
-		<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">-=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">if</span><span class="p">(</span><span class="mi">39</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding right</span>
-		<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="nx">resetObjectLocation</span><span class="p">(</span><span class="nx">hero</span><span class="p">);</span>
-<span class="p">};</span></code></pre></div>
-
+<span class='kd'>var</span> <span class='nx'>moveHero</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='mi'>38</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding up</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='mi'>40</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding down</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='mi'>37</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding left</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='k'>if</span><span class='p'>(</span><span class='mi'>39</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding right</span>
+		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
+	<span class='p'>}</span>
+	<span class='nx'>resetObjectLocation</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>);</span>
+<span class='p'>};</span>
+</code></pre></div>
 <p>Don’t forget to add speed to your hero array.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span></code></pre></div>
-
+<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
+</code></pre></div>
 <p>And add moveHero method call to your main method.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">moveHero</span><span class="p">();</span></code></pre></div>
-
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster">download</a> this example.</p>
-
-</div>
+<div class='highlight'><pre><code class='javascript'><span class='nx'>moveHero</span><span class='p'>();</span>
+</code></pre></div>
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster">download</a> this example.</p></div>
 	<p class="meta">Posted on <span class="postdate">Mar 16, 2014</span></p>
 </article>
 			</div>
