@@ -10,7 +10,7 @@
 				<title>Chef - Server Provisioning Software</title>
 				<description>&lt;p&gt;Okay, today I’m wearing my chef loves bacon hat. Today’s goal is to get started with Chef for provisioning load balanced API servers.&lt;/p&gt;
 
-&lt;p&gt;I’ll be starting out on a &lt;a href=&quot;http://railscasts.com/episodes/339-chef-solo-basics&quot;&gt;railscast&lt;/a&gt; video.&lt;/p&gt;</description>
+&lt;p&gt;I’ll be starting out on a &lt;a href=&quot;http://railscasts.com/episodes/339-chef-solo-basics&quot;&gt;railscast&lt;/a&gt; video. Well this video is on chef-solo and I’ll be using chef server, so not as much help as I was hoping. Next I went through this &lt;a href=&quot;http://gettingstartedwithchef.com/&quot;&gt;tutorial&lt;/a&gt;, but it just flat out didn’t work, so I stopped half way through. My boss suggested this &lt;a href=&quot;https://learnchef.opscode.com/screencasts/spring-fundamentals/week-1/&quot;&gt;video series&lt;/a&gt;, but it is beyond boring and overly complex. We’ll be using &lt;a href=&quot;http://www.getchef.com/&quot;&gt;opscode&lt;/a&gt; to host our chef server.&lt;/p&gt;</description>
 				<pubDate>Wed, 11 Jun 2014 07:41:00 +0000</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/11/chef-server-provisioning/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/11/chef-server-provisioning/</guid>
