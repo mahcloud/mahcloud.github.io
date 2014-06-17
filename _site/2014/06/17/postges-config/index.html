@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Chef - Server Provisioning Software</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014/06/17/postges-config/">Chef - Server Provisioning Software</a></h1>
+	
+	<div class="post-content"><p>I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following</p>
+
+<div class="highlight"><pre><code class="bash">rake aborted!
+DEBUG <span class="o">[]</span> 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+DEBUG <span class="o">[]</span> 	FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>initialize<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in `new&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>connect<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:548:in `initialize&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:41:in <span class="sb">`</span>new<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:41:in `postgresql_connection&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:440:in <span class="sb">`</span>new_connection<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:450:in `checkout_new_connection&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:421:in <span class="sb">`</span>acquire_connection<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:356:in `block in checkout&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:355:in <span class="sb">`</span>checkout<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:265:in `block in connection&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:264:in <span class="sb">`</span>connection<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:546:in `retrieve_connection&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_handling.rb:79:in <span class="sb">`</span>retrieve_connection<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_handling.rb:53:in `connection&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:863:in <span class="sb">`</span>initialize<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in `new&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in <span class="sb">`</span>up<span class="s1">&#39;</span>
+<span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:742:in `migrate&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in <span class="sb">`</span>block <span class="o">(</span>2 levels<span class="o">)</span> in &lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
+DEBUG <span class="o">[]</span> 	Tasks: <span class="nv">TOP</span> <span class="o">=</span>&gt; db:migrate
+DEBUG <span class="o">[]</span> 	<span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
+cap aborted!
+SSHKit::Command::Failed: rake <span class="nb">exit </span>status: 1
+rake stdout: Nothing written
+rake stderr: rake aborted!
+PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off</code></pre></div>
+
+<p>The pg_hba.conf file is generated when pg is is installed. The only problem is that I don’t want postgres installed on that server. I want the application to communicate with another server that hosts the postgres database so that I can have multiple application servers accessing the same database. So, since I’m not installing postgres, the config file is not being created. I could run <code>gem install pg --without-pg_config</code>, but then I wouldn’t be able to run capistrano. The <a href="http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html">pg_hba</a> file is described as a configuration file for client authentication. At first I thought this file needed to be created on the application side, but the application side actually is looking for this file on the postgres server. So, this file needs to be on the postgres server at /etc/postgresql/VERSION/main/pg_hba.conf</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="c1"># PostgreSQL Client Authentication Configuration File</span>
+<span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1"># Refer to the &quot;Client Authentication&quot; section in the PostgreSQL</span>
+<span class="c1"># documentation for a complete description of this file.  A short</span>
+<span class="c1"># synopsis follows.</span>
+<span class="c1">#</span>
+<span class="c1"># This file controls: which hosts are allowed to connect, how clients</span>
+<span class="c1"># are authenticated, which PostgreSQL user names they can use, which</span>
+<span class="c1"># databases they can access.  Records take one of these forms:</span>
+<span class="c1">#</span>
+<span class="c1"># local      DATABASE  USER  METHOD  [OPTIONS]</span>
+<span class="c1"># host       DATABASE  USER  ADDRESS  METHOD  [OPTIONS]</span>
+<span class="c1"># hostssl    DATABASE  USER  ADDRESS  METHOD  [OPTIONS]</span>
+<span class="c1"># hostnossl  DATABASE  USER  ADDRESS  METHOD  [OPTIONS]</span>
+<span class="c1">#</span>
+<span class="c1"># (The uppercase items must be replaced by actual values.)</span>
+<span class="c1">#</span>
+<span class="c1"># The first field is the connection type: &quot;local&quot; is a Unix-domain</span>
+<span class="c1"># socket, &quot;host&quot; is either a plain or SSL-encrypted TCP/IP socket,</span>
+<span class="c1"># &quot;hostssl&quot; is an SSL-encrypted TCP/IP socket, and &quot;hostnossl&quot; is a</span>
+<span class="c1"># plain TCP/IP socket.</span>
+<span class="c1">#</span>
+<span class="c1"># DATABASE can be &quot;all&quot;, &quot;sameuser&quot;, &quot;samerole&quot;, &quot;replication&quot;, a</span>
+<span class="c1"># database name, or a comma-separated list thereof. The &quot;all&quot;</span>
+<span class="c1"># keyword does not match &quot;replication&quot;. Access to replication</span>
+<span class="c1"># must be enabled in a separate record (see example below).</span>
+<span class="c1">#</span>
+<span class="c1"># USER can be &quot;all&quot;, a user name, a group name prefixed with &quot;+&quot;, or a</span>
+<span class="c1"># comma-separated list thereof.  In both the DATABASE and USER fields</span>
+<span class="c1"># you can also write a file name prefixed with &quot;@&quot; to include names</span>
+<span class="c1"># from a separate file.</span>
+<span class="c1">#</span>
+<span class="c1"># ADDRESS specifies the set of hosts the record matches.  It can be a</span>
+<span class="c1"># host name, or it is made up of an IP address and a CIDR mask that is</span>
+<span class="c1"># an integer (between 0 and 32 (IPv4) or 128 (IPv6) inclusive) that</span>
+<span class="c1"># specifies the number of significant bits in the mask.  A host name</span>
+<span class="c1"># that starts with a dot (.) matches a suffix of the actual host name.</span>
+<span class="c1"># Alternatively, you can write an IP address and netmask in separate</span>
+<span class="c1"># columns to specify the set of hosts.  Instead of a CIDR-address, you</span>
+<span class="c1"># can write &quot;samehost&quot; to match any of the server&#39;s own IP addresses,</span>
+<span class="c1"># or &quot;samenet&quot; to match any address in any subnet that the server is</span>
+<span class="c1"># directly connected to.</span>
+<span class="c1">#</span>
+<span class="c1"># METHOD can be &quot;trust&quot;, &quot;reject&quot;, &quot;md5&quot;, &quot;password&quot;, &quot;gss&quot;, &quot;sspi&quot;,</span>
+<span class="c1"># &quot;krb5&quot;, &quot;ident&quot;, &quot;peer&quot;, &quot;pam&quot;, &quot;ldap&quot;, &quot;radius&quot; or &quot;cert&quot;.  Note that</span>
+<span class="c1"># &quot;password&quot; sends passwords in clear text; &quot;md5&quot; is preferred since</span>
+<span class="c1"># it sends encrypted passwords.</span>
+<span class="c1">#</span>
+<span class="c1"># OPTIONS are a set of options for the authentication in the format</span>
+<span class="c1"># NAME=VALUE.  The available options depend on the different</span>
+<span class="c1"># authentication methods -- refer to the &quot;Client Authentication&quot;</span>
+<span class="c1"># section in the documentation for a list of which options are</span>
+<span class="c1"># available for which authentication methods.</span>
+<span class="c1">#</span>
+<span class="c1"># Database and user names containing spaces, commas, quotes and other</span>
+<span class="c1"># special characters must be quoted.  Quoting one of the keywords</span>
+<span class="c1"># &quot;all&quot;, &quot;sameuser&quot;, &quot;samerole&quot; or &quot;replication&quot; makes the name lose</span>
+<span class="c1"># its special character, and just match a database or username with</span>
+<span class="c1"># that name.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is read on server startup and when the postmaster receives</span>
+<span class="c1"># a SIGHUP signal.  If you edit the file on a running system, you have</span>
+<span class="c1"># to SIGHUP the postmaster for the changes to take effect.  You can</span>
+<span class="c1"># use &quot;pg_ctl reload&quot; to do that.</span>
+
+<span class="c1"># Put your actual configuration here</span>
+<span class="c1"># ----------------------------------</span>
+<span class="c1">#</span>
+<span class="c1"># If you want to allow non-local connections, you need to add more</span>
+<span class="c1"># &quot;host&quot; records.  In that case you will also need to make PostgreSQL</span>
+<span class="c1"># listen on a non-local interface via the listen_addresses</span>
+<span class="c1"># configuration parameter, or via the -i or -h command line switches.</span>
+
+
+
+
+<span class="c1"># DO NOT DISABLE!</span>
+<span class="c1"># If you change this first entry you will need to make sure that the</span>
+<span class="c1"># database superuser can access the database using some other method.</span>
+<span class="c1"># Noninteractive access to all databases is required during automatic</span>
+<span class="c1"># maintenance (custom daily cronjobs, replication, and similar tasks).</span>
+<span class="c1">#</span>
+<span class="c1"># Database administrative login by Unix domain socket</span>
+<span class="n">local</span>   <span class="n">all</span>             <span class="n">postgres</span>                                <span class="n">peer</span>
+
+<span class="c1"># TYPE  DATABASE        USER            ADDRESS                 METHOD</span>
+
+<span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
+<span class="n">local</span>   <span class="n">all</span>             <span class="n">all</span>                                     <span class="n">peer</span>
+<span class="c1"># IPv4 local connections:</span>
+<span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="no">APPLICATION_IP</span><span class="o">/</span><span class="mi">32</span>            <span class="n">md5</span>
+<span class="c1"># IPv6 local connections:</span>
+<span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="o">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span>                 <span class="n">md5</span>
+<span class="c1"># Allow replication connections from localhost, by a user with the</span>
+<span class="c1"># replication privilege.</span>
+<span class="c1">#local   replication     postgres                                peer</span>
+<span class="c1">#host    replication     postgres        127.0.0.1/32            md5</span>
+<span class="c1">#host    replication     postgres        ::1/128                 md5</span></code></pre></div>
+
+<p>The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. [Here][pg_hba_configure] is another for customizing that configuration file.</p>
+
+</div>
+	<p class="meta">Posted on <span class="postdate">Jun 17, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>

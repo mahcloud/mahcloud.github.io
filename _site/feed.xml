@@ -8,6 +8,153 @@
 		
 			<item>
 				<title>Chef - Server Provisioning Software</title>
+				<description>&lt;p&gt;I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;rake aborted!
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;initialize&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in `new&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;connect&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:548:in `initialize&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:41:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;new&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:41:in `postgresql_connection&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:440:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;new_connection&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:450:in `checkout_new_connection&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:421:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;acquire_connection&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:356:in `block in checkout&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:355:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;checkout&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:265:in `block in connection&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:264:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;connection&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:546:in `retrieve_connection&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_handling.rb:79:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;retrieve_connection&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_handling.rb:53:in `connection&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:863:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;initialize&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in `new&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;up&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:742:in `migrate&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;block &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2 levels&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; in &amp;lt;top &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;required&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	Tasks: &lt;span class=&quot;nv&quot;&gt;TOP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; db:migrate
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;See full trace by running task with --trace&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+cap aborted!
+SSHKit::Command::Failed: rake &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;status: 1
+rake stdout: Nothing written
+rake stderr: rake aborted!
+PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
+FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The pg_hba.conf file is generated when pg is is installed. The only problem is that I don’t want postgres installed on that server. I want the application to communicate with another server that hosts the postgres database so that I can have multiple application servers accessing the same database. So, since I’m not installing postgres, the config file is not being created. I could run &lt;code&gt;gem install pg --without-pg_config&lt;/code&gt;, but then I wouldn’t be able to run capistrano. The &lt;a href=&quot;http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html&quot;&gt;pg_hba&lt;/a&gt; file is described as a configuration file for client authentication. At first I thought this file needed to be created on the application side, but the application side actually is looking for this file on the postgres server. So, this file needs to be on the postgres server at /etc/postgresql/VERSION/main/pg_hba.conf&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# PostgreSQL Client Authentication Configuration File&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ===================================================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Refer to the &amp;quot;Client Authentication&amp;quot; section in the PostgreSQL&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# documentation for a complete description of this file.  A short&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# synopsis follows.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# This file controls: which hosts are allowed to connect, how clients&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# are authenticated, which PostgreSQL user names they can use, which&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# databases they can access.  Records take one of these forms:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# local      DATABASE  USER  METHOD  [OPTIONS]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# host       DATABASE  USER  ADDRESS  METHOD  [OPTIONS]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# hostssl    DATABASE  USER  ADDRESS  METHOD  [OPTIONS]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# hostnossl  DATABASE  USER  ADDRESS  METHOD  [OPTIONS]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# (The uppercase items must be replaced by actual values.)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# The first field is the connection type: &amp;quot;local&amp;quot; is a Unix-domain&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# socket, &amp;quot;host&amp;quot; is either a plain or SSL-encrypted TCP/IP socket,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;hostssl&amp;quot; is an SSL-encrypted TCP/IP socket, and &amp;quot;hostnossl&amp;quot; is a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# plain TCP/IP socket.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# DATABASE can be &amp;quot;all&amp;quot;, &amp;quot;sameuser&amp;quot;, &amp;quot;samerole&amp;quot;, &amp;quot;replication&amp;quot;, a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# database name, or a comma-separated list thereof. The &amp;quot;all&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# keyword does not match &amp;quot;replication&amp;quot;. Access to replication&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# must be enabled in a separate record (see example below).&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# USER can be &amp;quot;all&amp;quot;, a user name, a group name prefixed with &amp;quot;+&amp;quot;, or a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# comma-separated list thereof.  In both the DATABASE and USER fields&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# you can also write a file name prefixed with &amp;quot;@&amp;quot; to include names&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# from a separate file.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ADDRESS specifies the set of hosts the record matches.  It can be a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# host name, or it is made up of an IP address and a CIDR mask that is&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# an integer (between 0 and 32 (IPv4) or 128 (IPv6) inclusive) that&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# specifies the number of significant bits in the mask.  A host name&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# that starts with a dot (.) matches a suffix of the actual host name.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Alternatively, you can write an IP address and netmask in separate&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# columns to specify the set of hosts.  Instead of a CIDR-address, you&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# can write &amp;quot;samehost&amp;quot; to match any of the server&amp;#39;s own IP addresses,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# or &amp;quot;samenet&amp;quot; to match any address in any subnet that the server is&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# directly connected to.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# METHOD can be &amp;quot;trust&amp;quot;, &amp;quot;reject&amp;quot;, &amp;quot;md5&amp;quot;, &amp;quot;password&amp;quot;, &amp;quot;gss&amp;quot;, &amp;quot;sspi&amp;quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;krb5&amp;quot;, &amp;quot;ident&amp;quot;, &amp;quot;peer&amp;quot;, &amp;quot;pam&amp;quot;, &amp;quot;ldap&amp;quot;, &amp;quot;radius&amp;quot; or &amp;quot;cert&amp;quot;.  Note that&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;password&amp;quot; sends passwords in clear text; &amp;quot;md5&amp;quot; is preferred since&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# it sends encrypted passwords.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# OPTIONS are a set of options for the authentication in the format&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# NAME=VALUE.  The available options depend on the different&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# authentication methods -- refer to the &amp;quot;Client Authentication&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# section in the documentation for a list of which options are&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# available for which authentication methods.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Database and user names containing spaces, commas, quotes and other&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# special characters must be quoted.  Quoting one of the keywords&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;all&amp;quot;, &amp;quot;sameuser&amp;quot;, &amp;quot;samerole&amp;quot; or &amp;quot;replication&amp;quot; makes the name lose&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# its special character, and just match a database or username with&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# that name.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# This file is read on server startup and when the postmaster receives&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# a SIGHUP signal.  If you edit the file on a running system, you have&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# to SIGHUP the postmaster for the changes to take effect.  You can&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# use &amp;quot;pg_ctl reload&amp;quot; to do that.&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Put your actual configuration here&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ----------------------------------&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# If you want to allow non-local connections, you need to add more&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;host&amp;quot; records.  In that case you will also need to make PostgreSQL&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# listen on a non-local interface via the listen_addresses&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# configuration parameter, or via the -i or -h command line switches.&lt;/span&gt;
+
+
+
+
+&lt;span class=&quot;c1&quot;&gt;# DO NOT DISABLE!&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# If you change this first entry you will need to make sure that the&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# database superuser can access the database using some other method.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Noninteractive access to all databases is required during automatic&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# maintenance (custom daily cronjobs, replication, and similar tasks).&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Database administrative login by Unix domain socket&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;                                &lt;span class=&quot;n&quot;&gt;peer&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# TYPE  DATABASE        USER            ADDRESS                 METHOD&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# &amp;quot;local&amp;quot; is for Unix domain socket connections only&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;                                     &lt;span class=&quot;n&quot;&gt;peer&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# IPv4 local connections:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;no&quot;&gt;APPLICATION_IP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# IPv6 local connections:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Allow replication connections from localhost, by a user with the&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# replication privilege.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#local   replication     postgres                                peer&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#host    replication     postgres        127.0.0.1/32            md5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#host    replication     postgres        ::1/128                 md5&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. [Here][pg_hba_configure] is another for customizing that configuration file.&lt;/p&gt;
+
+</description>
+				<pubDate>Tue, 17 Jun 2014 09:37:00 -0500</pubDate>
+				<link>http://www.mikehoffert.com/2014/06/17/postges-config/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/17/postges-config/</guid>
+			</item>
+		
+			<item>
+				<title>Chef - Server Provisioning Software</title>
 				<description>&lt;p&gt;So, I got to the point where I wanted a clean slate so I reformatted and started my mac over with a clean install.
 I’m setting up things that I haven’t configured in a long time.
 It’s good for my memory though.&lt;/p&gt;
@@ -545,65 +692,6 @@ You’ll need a hero.png image&lt;/p&gt;
 				<pubDate>Sun, 16 Mar 2014 07:15:00 -0500</pubDate>
 				<link>http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-a-hero/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-a-hero/</guid>
-			</item>
-		
-			<item>
-				<title>Javascript Canvas Game Create a Page</title>
-				<description>&lt;p&gt;First create an index page.
-You can name this file anything you want as long as it is saved as an html extension.
-This is where your game lives.
-You can see it by opening your index page.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-		&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-		&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Simple Canvas Game&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-		&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
-			&lt;span class=&quot;nt&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-			&lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;background-image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sx&quot;&gt;url(images/background.jpg)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-		&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;js/main.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;It won’t look like much of anything yet.
-Let’s fix that by adding a background image.
-Your index page says the background image is located at images/background.jpg.
-So let’s create a folder in the same place as your index page and add a background.jpg image in it.
-&lt;img src=&quot;https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/background.jpg?raw=true&quot; alt=&quot;Background Image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The game will be built on a javascript engine using acanvas.
-First add a js folder and put a main.js file in it.
-Adding the following with create a canvas with dimensions 979pixels X 606pixels and add it to the index page.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;canvas&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ctx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;2d&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;979&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;606&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The following will create a background image and draw it on the canvas.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bgImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;bgImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;drawImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bgImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;bgImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;images/canvas_background.png&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/canvas_background.png?raw=true&quot; alt=&quot;Background Image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You’ll notice that there is an onload function called.
-It takes time for javascript to load up the background image.&lt;/p&gt;
-
-&lt;p&gt;You can &lt;a href=&quot;https://github.com/mahcloud/SimpleCanvasGame/tree/start&quot;&gt;download&lt;/a&gt; this example.&lt;/p&gt;
-
-</description>
-				<pubDate>Sun, 16 Mar 2014 07:00:00 -0500</pubDate>
-				<link>http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-create-a-page/</link>
-				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-create-a-page/</guid>
 			</item>
 		
 	</channel>
