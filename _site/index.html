@@ -42,7 +42,9 @@
 		
 		<div class="post-content"><p>Okay, today I’m wearing my chef loves bacon hat. Today’s goal is to get started with Chef for provisioning load balanced API servers.</p>
 
-<p>I’ll be starting out on a <a href="http://railscasts.com/episodes/339-chef-solo-basics">railscast</a> video. Well this video is on chef-solo and I’ll be using chef server, so not as much help as I was hoping. Next I went through this <a href="http://gettingstartedwithchef.com/">tutorial</a>, but it just flat out didn’t work, so I stopped half way through. My boss suggested this <a href="https://learnchef.opscode.com/screencasts/spring-fundamentals/week-1/">video series</a>, but it is beyond boring and overly complex. We’ll be using <a href="http://www.getchef.com/">opscode</a> to host our chef server.</p></div>
+<p>I’ll be starting out on a <a href="http://railscasts.com/episodes/339-chef-solo-basics">railscast</a> video. Well this video is on chef-solo and I’ll be using chef server, so not as much help as I was hoping. Next I went through this <a href="http://gettingstartedwithchef.com/">tutorial</a>, but it just flat out didn’t work, so I stopped half way through. My boss suggested this <a href="https://learnchef.opscode.com/screencasts/spring-fundamentals/week-1/">video series</a>, but it is beyond boring and overly complex. We’ll be using <a href="http://www.getchef.com/">opscode</a> to host our chef server.</p>
+
+</div>
 	</article>
 
 	<article class="post">
@@ -56,59 +58,81 @@
 <p>Well, I’m back and onto a new project that needs rails deployment. This time it is a reporting tools. In order to not slow down the live orders/quotes table with reporting, I’m building a seperate database of order/quote data that should be populated identical to the live database. I’m using <a href="http://www.rabbitmq.com/">rabbitMQ</a> to transfer a hash of the data when an order or quote is changed. This way it doesn’t slow down the transaction or database on the live site. The hash is put in a queue by the rabbit exchange. Our reporting application will then consume that data and save the calculations to a postgres database.</p>
 
 <p>Now that we have all the background story covered, I’ve got the RoR application deploying live and to a beta staging environment. When I deploy to these boxes, I need a zero downtime switch to the new code. Since the reporting server is constantly consuming data from rabbitMQ, it would be very bad if it missed any of these queued items. I’ll be using <a href="http://godrb.com/">god</a> to keep the rabbitMQ listener up and running even during a code deployment. So, the line I need to add to my capistrano deployment is:</p>
-<div class='highlight'><pre><code class='bash'>sudo /var/god/.rvm/bin/god restart APP-NAME
-</code></pre></div>
+
+<div class="highlight"><pre><code class="bash">sudo /var/god/.rvm/bin/god restart APP-NAME</code></pre></div>
+
 <p>I’m having a little problem here.</p>
-<div class='highlight'><pre><code class='bash'>Command: /usr/bin/env sudo
-DEBUG <span class='o'>[]</span> 	usage: sudo -h <span class='p'>|</span> -K <span class='p'>|</span> -k <span class='p'>|</span> -V
-DEBUG <span class='o'>[]</span> 	usage: sudo -v <span class='o'>[</span>-g group<span class='o'>]</span> <span class='o'>[</span>-h host<span class='o'>]</span> <span class='o'>[</span>-p prompt<span class='o'>]</span> <span class='o'>[</span>-u user<span class='o'>]</span>
-DEBUG <span class='o'>[]</span> 	usage: sudo -l <span class='o'>[</span>-g group<span class='o'>]</span> <span class='o'>[</span>-h host<span class='o'>]</span> <span class='o'>[</span>-p prompt<span class='o'>]</span> <span class='o'>[</span>-U user<span class='o'>]</span> <span class='o'>[</span>-u user<span class='o'>]</span>
-DEBUG <span class='o'>[]</span> 	  
-DEBUG <span class='o'>[]</span> 	          <span class='o'>[</span><span class='nb'>command</span><span class='o'>]</span>
-DEBUG <span class='o'>[]</span> 	usage: sudo <span class='o'>[</span>-r role<span class='o'>]</span> <span class='o'>[</span>-t <span class='nb'>type</span><span class='o'>]</span> <span class='o'>[</span>-C num<span class='o'>]</span> <span class='o'>[</span>-g group<span class='o'>]</span> <span class='o'>[</span>-h host<span class='o'>]</span> <span class='o'>[</span>-p
-DEBUG <span class='o'>[]</span> 	  
-DEBUG <span class='o'>[]</span> 	          prompt<span class='o'>]</span> <span class='o'>[</span>-u user<span class='o'>]</span> <span class='o'>[</span><span class='nv'>VAR</span><span class='o'>=</span>value<span class='o'>]</span> <span class='o'>[</span>-i<span class='p'>|</span>-s<span class='o'>]</span> <span class='o'>[</span>&lt;<span class='nb'>command</span>&gt;<span class='o'>]</span>
-DEBUG <span class='o'>[]</span> 	usage: sudo -e <span class='o'>[</span>-r role<span class='o'>]</span> <span class='o'>[</span>-t <span class='nb'>type</span><span class='o'>]</span> <span class='o'>[</span>-C num<span class='o'>]</span> <span class='o'>[</span>-g group<span class='o'>]</span> <span class='o'>[</span>-h host<span class='o'>]</span> <span class='o'>[</span>-p
-DEBUG <span class='o'>[]</span> 	    
-DEBUG <span class='o'>[]</span> 	        prompt<span class='o'>]</span> <span class='o'>[</span>-u user<span class='o'>]</span> file ...
+
+<div class="highlight"><pre><code class="bash">Command: /usr/bin/env sudo
+DEBUG <span class="o">[]</span> 	usage: sudo -h <span class="p">|</span> -K <span class="p">|</span> -k <span class="p">|</span> -V
+DEBUG <span class="o">[]</span> 	usage: sudo -v <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
+DEBUG <span class="o">[]</span> 	usage: sudo -l <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-U user<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
+DEBUG <span class="o">[]</span> 	  
+DEBUG <span class="o">[]</span> 	          <span class="o">[</span><span class="nb">command</span><span class="o">]</span>
+DEBUG <span class="o">[]</span> 	usage: sudo <span class="o">[</span>-r role<span class="o">]</span> <span class="o">[</span>-t <span class="nb">type</span><span class="o">]</span> <span class="o">[</span>-C num<span class="o">]</span> <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p
+DEBUG <span class="o">[]</span> 	  
+DEBUG <span class="o">[]</span> 	          prompt<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span> <span class="o">[</span><span class="nv">VAR</span><span class="o">=</span>value<span class="o">]</span> <span class="o">[</span>-i<span class="p">|</span>-s<span class="o">]</span> <span class="o">[</span>&lt;<span class="nb">command</span>&gt;<span class="o">]</span>
+DEBUG <span class="o">[]</span> 	usage: sudo -e <span class="o">[</span>-r role<span class="o">]</span> <span class="o">[</span>-t <span class="nb">type</span><span class="o">]</span> <span class="o">[</span>-C num<span class="o">]</span> <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p
+DEBUG <span class="o">[]</span> 	    
+DEBUG <span class="o">[]</span> 	        prompt<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span> file ...
 cap aborted!
-SSHKit::Command::Failed: sudo <span class='nb'>exit </span>status: 1
+SSHKit::Command::Failed: sudo <span class="nb">exit </span>status: 1
 sudo stdout: Nothing written
-sudo stderr: usage: sudo -h <span class='p'>|</span> -K <span class='p'>|</span> -k <span class='p'>|</span> -V
-/gems/sshkit-1.4.0/lib/sshkit/command.rb:98:in <span class='sb'>`</span><span class='nv'>exit_status</span><span class='o'>=</span><span class='err'>&#39;</span>
-</code></pre></div>
+sudo stderr: usage: sudo -h <span class="p">|</span> -K <span class="p">|</span> -k <span class="p">|</span> -V
+/gems/sshkit-1.4.0/lib/sshkit/command.rb:98:in <span class="sb">`</span><span class="nv">exit_status</span><span class="o">=</span><span class="err">&#39;</span></code></pre></div>
+
 <p>First thought, this exact script does work on the server by manually entering it.</p>
 
-<p>Next, what is <a href="https://github.com/capistrano/sshkit">SSHKit</a>? It is a gem capistrano uses to make ssh connections to all the different environments I will be deploying to.</p>
+<p>Next, what is <a href="https://github.com/capistrano/sshkit">SSHKit</a>?
+It is a gem capistrano uses to make ssh connections to all the different environments I will be deploying to.</p>
 
-<p>Exit status 1 just means there was an error with no more explanation than that. So, I’m a little stuck here. Bash doesn’t give any specific error code. I would guess it has something to do using sudo without a password on an ssh connection using an ssh-key for authentication. I asked my boss if he had any suggestions. He said <code>does the deploy user have password-less sudo rights?</code>. It looks like there is something called pty and tty. So what are they and what’s the difference? I found <a href="http://ubuntuforums.org/archive/index.php/t-833765.html">TTY and PTY</a> and <a href="http://stackoverflow.com/questions/4426280/what-do-pty-and-tty-mean">Teletype</a>. Still very confused why I would need a virtual terminal for deploying and if I capistrano needs a virtual terminal to run commands how it did anything with out it. Maybe it was already using one and I can just set it to a different one.</p>
+<p>Exit status 1 just means there was an error with no more explanation than that.
+So, I’m a little stuck here. Bash doesn’t give any specific error code. I would guess it has something to do using sudo without a password on an ssh connection using an ssh-key for authentication. I asked my boss if he had any suggestions. He said <code>does the deploy user have password-less sudo rights?</code>. It looks like there is something called pty and tty. So what are they and what’s the difference?
+I found <a href="http://ubuntuforums.org/archive/index.php/t-833765.html">TTY and PTY</a> and <a href="http://stackoverflow.com/questions/4426280/what-do-pty-and-tty-mean">Teletype</a>. Still very confused why I would need a virtual terminal for deploying and if I capistrano needs a virtual terminal to run commands how it did anything with out it. Maybe it was already using one and I can just set it to a different one.</p>
 
 <p>Okay, so I still feel lost enough not to know where to go. Since, pty doesn’t sound harmful at all, I guess I will just turn it on and see what happens.</p>
 
 <p>Turning on pty with <code>set :pty, true</code> or <code>set :tty, true</code> in config/deploy.rb file gave the same results.</p>
 
-<p>Okay, I think was on the wrong track with the pty thing. I had to add my user as a <a href="http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password">passwordless sudo</a> user for deploying. That took care of the problem.</p></div>
+<p>Okay, I think was on the wrong track with the pty thing. I had to add my user as a <a href="http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password">passwordless sudo</a> user for deploying. That took care of the problem.</p>
+
+</div>
 	</article>
 
 	<article class="post">
 		
 			<h1><a href="/2014/04/09/rails-app-deploy/">First rails deploy</a></h1>
 		
-		<div class="post-content"><p>I’ve been working on learning how to deploy a rails app without the help of <a href="https://www.heroku.com">Heroku</a>. You might ask why I would want to do that. That’s a really good question that I ask myself everytime I can’t figure things out for hours on end. I won’t answer that question now. I’ll leave that for the last post I make on RailsDeploy.</p>
+		<div class="post-content"><p>I’ve been working on learning how to deploy a rails app without the help of <a href="https://www.heroku.com">Heroku</a>.
+You might ask why I would want to do that.
+That’s a really good question that I ask myself everytime I can’t figure things out for hours on end.
+I won’t answer that question now.
+I’ll leave that for the last post I make on RailsDeploy.</p>
 
-<p>My teacher is the author of <a href="https://railsdeploymentbook.com/">Fearless Rails Deployment</a>. If you preorder his book, he’ll let you view the draft so far. I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.</p>
+<p>My teacher is the author of <a href="https://railsdeploymentbook.com/">Fearless Rails Deployment</a>.
+If you preorder his book, he’ll let you view the draft so far.
+I don’t want to give away anything that is in his book, so I’m just gonna skim over what I’ve learned.</p>
 
-<p>I deployed using capistrano. This will create the capistrano files:</p>
-<div class='highlight'><pre><code class='bash'>cap install
-</code></pre></div>
-<p>To use capistrano you’ll need to be able to ssh authenticate with ssh key instead of password. <a href="http://gorails.com/deploy/ubuntu/12.04">Here</a> is a great tutorial on how to do that.</p>
+<p>I deployed using capistrano.
+This will create the capistrano files:</p>
 
-<p>First, I needed to install unicorn as my rails server. This part was a lot easier than I thought it was going to be. After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
-<div class='highlight'><pre><code class='bash'>vim /etc/unicorn/mahcloud.rb
-</code></pre></div><div class='highlight'><pre><code class='ruby'><span class='n'>pid</span> <span class='s1'>&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
-<span class='n'>working_directory</span> <span class='s1'>&#39;/home/root/mahcloud/&#39;</span>
-</code></pre></div>
-<p>The config file has a little more to it than that.</p></div>
+<div class="highlight"><pre><code class="bash">cap install</code></pre></div>
+
+<p>To use capistrano you’ll need to be able to ssh authenticate with ssh key instead of password.
+<a href="http://gorails.com/deploy/ubuntu/12.04">Here</a> is a great tutorial on how to do that.</p>
+
+<p>First, I needed to install unicorn as my rails server.
+This part was a lot easier than I thought it was going to be.
+After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
+
+<div class="highlight"><pre><code class="bash">vim /etc/unicorn/mahcloud.rb</code></pre></div>
+
+<div class="highlight"><pre><code class="ruby"><span class="n">pid</span> <span class="s1">&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
+<span class="n">working_directory</span> <span class="s1">&#39;/home/root/mahcloud/&#39;</span></code></pre></div>
+
+<p>The config file has a little more to it than that.</p>
+
+</div>
 	</article>
 
 	<article class="post">
@@ -117,77 +141,109 @@ sudo stderr: usage: sudo -h <span class='p'>|</span> -K <span class='p'>|</span>
 		
 		<div class="post-content"><p>Wouldn’t it be more fun if we were dealing with Pokemon instead of an Ogre?</p>
 
-<p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/1.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/2.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/3.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/4.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/5.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/6.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/7.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/8.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/9.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/10.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/11.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/12.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/13.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/14.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/15.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/16.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/17.png?raw=true" alt="Background Image" /> <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/18.png?raw=true" alt="Background Image" /></p>
+<p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/1.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/2.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/3.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/4.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/5.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/6.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/7.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/8.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/9.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/10.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/11.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/12.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/13.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/14.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/15.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/16.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/17.png?raw=true" alt="Background Image" />
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/pokemon/18.png?raw=true" alt="Background Image" /></p>
 
 <p>These are the image dimensions for the pokemon.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>pokemon_dimensions</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>29</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>21</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>24</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>31</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>30</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>30</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>27</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>26</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>28</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>30</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>24</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>30</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>24</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>32</span><span class='p'>,</span> <span class='mi'>26</span><span class='p'>),</span>
-	<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>18</span><span class='p'>,</span> <span class='mi'>32</span><span class='p'>)</span>
-<span class='p'>);</span>
-</code></pre></div>
-<p>Add this to your spawnMonster function.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>pokemon</span> <span class='o'>=</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>floor</span><span class='p'>(</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='mi'>18</span><span class='p'>)</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>;</span>
-<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/pokemon/&quot;</span><span class='o'>+</span><span class='nx'>pokemon</span><span class='o'>+</span><span class='s2'>&quot;.png&quot;</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='nx'>pokemon_dimensions</span><span class='p'>[</span><span class='nx'>pokemon</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>];</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='nx'>pokemon_dimensions</span><span class='p'>[</span><span class='nx'>pokemon</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>1</span><span class='p'>];</span>
-</code></pre></div>
-<p>Let’s rename some methods. monstersSlain should be pokemonCaught. slayMonster should be catchPokemon.</p>
 
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p></div>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span>
+	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="p">);</span></code></pre></div>
+
+<p>Add this to your spawnMonster function.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/pokemon/&quot;</span><span class="o">+</span><span class="nx">pokemon</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span></code></pre></div>
+
+<p>Let’s rename some methods.
+monstersSlain should be pokemonCaught.
+slayMonster should be catchPokemon.</p>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p>
+
+</div>
 	</article>
 
 	<article class="post">
 		
 			<h1><a href="/2014/03/18/javascript-canvas-game-monster-gates/">Javascript Canvas Game Monster Gates</a></h1>
 		
-		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena. First, add the gates array.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>gates</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span>
-		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>),</span>
-		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>),</span>
-		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>),</span>
-		<span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span>
-	<span class='p'>);</span>
-</code></pre></div>
+		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena.
+First, add the gates array.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">),</span>
+		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="p">);</span></code></pre></div>
+
 <p>Then we want to spawn a monster randomly.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>spawnMonster</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>gate</span> <span class='o'>=</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>floor</span><span class='p'>(</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='mi'>4</span><span class='p'>)</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>;</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='nx'>gates</span><span class='p'>[</span><span class='nx'>gate</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>];</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='nx'>gates</span><span class='p'>[</span><span class='nx'>gate</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>][</span><span class='mi'>1</span><span class='p'>];</span>
-<span class='p'>};</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">gate</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">};</span></code></pre></div>
+
 <p>And change this in the slayMonster function</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
+
 <p>for</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>spawnMonster</span><span class='p'>();</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+
 <p>Added bonus, we can have the monster start at a spawn point by adding.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>spawnMonster</span><span class='p'>();</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+
 <p>And change the monster array values.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='o'>-</span><span class='mi'>100</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='o'>-</span><span class='mi'>100</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span></code></pre></div>
+
 <p>This means that the monster will be drawn off the screen before it is spawned.</p>
 
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster-gates">download</a> this example.</p></div>
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster-gates">download</a> this example.</p>
+
+</div>
 	</article>
 
 	<article class="post">
@@ -195,229 +251,278 @@ sudo stderr: usage: sudo -h <span class='p'>|</span> -K <span class='p'>|</span>
 			<h1><a href="/2014/03/18/javascript-canvas-game-slay-monster/">Javascript Canvas Game Slay Monster</a></h1>
 		
 		<div class="post-content"><p>Slaying monsters in our javascript arena.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>slayMonster</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='nx'>isTouching</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>))</span> <span class='p'>{</span>
-		<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
-		<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
-	<span class='p'>}</span>
-<span class='p'>};</span>
 
-<span class='kd'>var</span> <span class='nx'>isTouching</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>(</span><span class='nx'>a</span><span class='p'>,</span> <span class='nx'>b</span><span class='p'>)</span> <span class='p'>{</span>
-	<span class='kd'>var</span> <span class='nx'>ret</span> <span class='o'>=</span> <span class='kc'>false</span><span class='p'>;</span>
-	<span class='k'>if</span><span class='p'>((</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>))</span> <span class='o'>&amp;&amp;</span> <span class='p'>(</span><span class='nx'>b</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;=</span> <span class='p'>(</span><span class='nx'>a</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+</span> <span class='nx'>b</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>)))</span> <span class='p'>{</span>
-		<span class='nx'>ret</span> <span class='o'>=</span> <span class='kc'>true</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>return</span> <span class='nx'>ret</span><span class='p'>;</span>
-<span class='p'>};</span>
-</code></pre></div>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">slayMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">isTouching</span><span class="p">(</span><span class="nx">hero</span><span class="p">,</span> <span class="nx">monster</span><span class="p">))</span> <span class="p">{</span>
+		<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+		<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">isTouching</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="k">if</span><span class="p">((</span><span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">height</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">height</span><span class="p">)))</span> <span class="p">{</span>
+		<span class="nx">ret</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+<span class="p">};</span></code></pre></div>
+
 <p>Slay monster function simply checks if the hero and monster are touching and then respawns the monster at location 100, 100.</p>
 
 <p>The slayMonster function should be called in the main function.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>slayMonster</span><span class='p'>();</span>
-</code></pre></div>
-<p>It’s more fun if we had some stats on how many monsters we have slain. Add a variable to the hero array to keep track of how many monsters have been slain.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">slayMonster</span><span class="p">();</span></code></pre></div>
+
+<p>It’s more fun if we had some stats on how many monsters we have slain.
+Add a variable to the hero array to keep track of how many monsters have been slain.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></div>
+
 <p>Now in the slayMonsters if isTouching block add an incrementer.</p>
-<div class='highlight'><pre><code class='javascript'><span class='o'>++</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span><span class='p'>;</span>
-</code></pre></div>
-<p>We need to show this on the screen. Add an HTML element to store the stat in. We’ll also need jQuery, a helpful javascript library.</p>
-<div class='highlight'><pre><code class='html'><span class='nt'>&lt;div</span> <span class='na'>id=</span><span class='s'>&quot;monsters_slain_header&quot;</span><span class='nt'>&gt;</span>
-	<span class='nt'>&lt;span&gt;</span>Monsters Slain: <span class='nt'>&lt;/span&gt;&lt;span</span> <span class='na'>id=</span><span class='s'>&quot;monsters_slain&quot;</span><span class='nt'>&gt;</span>0<span class='nt'>&lt;/span&gt;</span>
-<span class='nt'>&lt;/div&gt;</span>
-<span class='nt'>&lt;script </span><span class='na'>src=</span><span class='s'>&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class='nt'>&gt;&lt;/script&gt;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="o">++</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">;</span></code></pre></div>
+
+<p>We need to show this on the screen.
+Add an HTML element to store the stat in.
+We’ll also need jQuery, a helpful javascript library.</p>
+
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;monsters_slain_header&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;span&gt;</span>Monsters Slain: <span class="nt">&lt;/span&gt;&lt;span</span> <span class="na">id=</span><span class="s">&quot;monsters_slain&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+
 <p>To push the monsters slain count to the html element, add this to your render function.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>$</span><span class='p'>(</span><span class='s1'>&#39;#monsters_slain&#39;</span><span class='p'>).</span><span class='nx'>html</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>monstersSlain</span><span class='p'>);</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#monsters_slain&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">);</span></code></pre></div>
+
 <p>Let’s add some styling to our stat bar.</p>
-<div class='highlight'><pre><code class='css'><span class='nf'>#monsters_slain_header</span> <span class='p'>{</span> <span class='k'>color</span><span class='o'>:</span> <span class='nb'>white</span><span class='p'>;</span> <span class='k'>font-weight</span><span class='o'>:</span> <span class='k'>bold</span><span class='p'>;</span> <span class='k'>font-size</span><span class='o'>:</span> <span class='m'>18px</span><span class='p'>;</span> <span class='k'>margin</span><span class='o'>:</span> <span class='m'>10px</span> <span class='m'>15px</span><span class='p'>;</span> <span class='p'>}</span>
-</code></pre></div>
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p></div>
+
+<div class="highlight"><pre><code class="css"><span class="nf">#monsters_slain_header</span> <span class="p">{</span> <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span> <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span> <span class="k">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span> <span class="k">margin</span><span class="o">:</span> <span class="m">10px</span> <span class="m">15px</span><span class="p">;</span> <span class="p">}</span></code></pre></div>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p>
+
+</div>
 	</article>
 
 	<article class="post">
 		
 			<h1><a href="/2014/03/16/javascript-canvas-game-add-monster/">Javascript Canvas Game Add Monster</a></h1>
 		
-		<div class="post-content"><p>Let’s add a monster to our javascript arena. You’ll need a monster.png image.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>monsterImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>onload</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>monsterImage</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>);</span>
-<span class='p'>};</span>
-<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/monster.png&quot;</span><span class='p'>;</span>
-</code></pre></div>
+		<div class="post-content"><p>Let’s add a monster to our javascript arena.
+You’ll need a monster.png image.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">monsterImage</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/monster.png&quot;</span><span class="p">;</span></code></pre></div>
+
 <p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/monster.png?raw=true" alt="Background Image" /></p>
 
-<p>Next, let’s make them move. We’ll make it so we can control the hero’s movement. First, we need to update the images so they load every time the hero and monster move. Change the image code to:</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>bgImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/canvas_background.png&quot;</span><span class='p'>;</span>
+<p>Next, let’s make them move.
+We’ll make it so we can control the hero’s movement.
+First, we need to update the images so they load every time the hero and monster move.
+Change the image code to:</p>
 
-<span class='kd'>var</span> <span class='nx'>heroImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>heroImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/hero.png&quot;</span><span class='p'>;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">bgImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/canvas_background.png&quot;</span><span class="p">;</span>
 
-<span class='kd'>var</span> <span class='nx'>monsterImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>monsterImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/monster.png&quot;</span><span class='p'>;</span>
-</code></pre></div>
+<span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">heroImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/hero.png&quot;</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/monster.png&quot;</span><span class="p">;</span></code></pre></div>
+
 <p>Basically removing the onload functions.</p>
 
 <p>We will then reload the images every few miliseconds with:</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>hero</span> <span class='o'>=</span> <span class='p'>{};</span>
-<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>32</span><span class='p'>;</span>
-<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>32</span><span class='p'>;</span>
-<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span> <span class='o'>-</span> <span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>);</span>
-<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span> <span class='o'>-</span> <span class='p'>(</span><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>);</span>
 
-<span class='kd'>var</span> <span class='nx'>monster</span> <span class='o'>=</span> <span class='p'>{};</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>32</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>30</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>100</span><span class='p'>;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">hero</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+<span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
 
-<span class='kd'>var</span> <span class='nx'>render</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>clearRect</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>,</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>);</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>bgImage</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>);</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>monsterImage</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span><span class='p'>,</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span><span class='p'>);</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>heroImage</span><span class='p'>,</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span><span class='p'>,</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span><span class='p'>);</span>
-<span class='p'>};</span>
+<span class="kd">var</span> <span class="nx">monster</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
-<span class='kd'>var</span> <span class='nx'>main</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>render</span><span class='p'>();</span>
-<span class='p'>};</span>
+<span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">clearRect</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">bgImage</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">monsterImage</span><span class="p">,</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">heroImage</span><span class="p">,</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+<span class="p">};</span>
 
-<span class='nx'>setInterval</span><span class='p'>(</span><span class='nx'>main</span><span class='p'>,</span> <span class='mi'>100</span><span class='p'>);</span>
-</code></pre></div>
+<span class="kd">var</span> <span class="nx">main</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">render</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="nx">main</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span></code></pre></div>
+
 <p>Now let’s make our monster move.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>moveMonster</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span><span class='p'>;</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span><span class='p'>;</span>
-	<span class='nx'>resetObjectLocation</span><span class='p'>(</span><span class='nx'>monster</span><span class='p'>);</span>
-<span class='p'>};</span>
 
-<span class='kd'>var</span> <span class='nx'>updateMonsterDirection</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span> <span class='o'>=</span> <span class='p'>((</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>&lt;</span> <span class='mf'>0.5</span><span class='p'>)</span><span class='o'>?</span> <span class='o'>-</span><span class='mi'>1</span> <span class='o'>:</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-	<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span><span class='o'>=</span> <span class='p'>((</span><span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>&lt;</span> <span class='mf'>0.5</span><span class='p'>)</span><span class='o'>?</span> <span class='o'>-</span><span class='mi'>1</span> <span class='o'>:</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>random</span><span class='p'>()</span> <span class='o'>*</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-<span class='p'>};</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">moveMonster</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span><span class="p">;</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span><span class="p">;</span>
+	<span class="nx">resetObjectLocation</span><span class="p">(</span><span class="nx">monster</span><span class="p">);</span>
+<span class="p">};</span>
 
-<span class='kd'>var</span> <span class='nx'>resetObjectLocation</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>)</span> <span class='p'>{</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&lt;</span> <span class='mi'>0</span><span class='p'>)</span> <span class='p'>{</span>
-		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&lt;</span> <span class='mi'>0</span><span class='p'>)</span> <span class='p'>{</span>
-		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>&gt;</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>))</span> <span class='p'>{</span>
-		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>height</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>&gt;</span> <span class='p'>(</span><span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>))</span> <span class='p'>{</span>
-		<span class='nx'>object</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>-</span> <span class='nx'>object</span><span class='p'>.</span><span class='nx'>width</span><span class='p'>;</span>
-	<span class='p'>}</span>
-<span class='p'>}</span>
-</code></pre></div>
+<span class="kd">var</span> <span class="nx">updateMonsterDirection</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span> <span class="o">=</span> <span class="p">((</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+	<span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span><span class="o">=</span> <span class="p">((</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">resetObjectLocation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span><span class="p">))</span> <span class="p">{</span>
+		<span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="p">{</span>
+		<span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
 <p>And add the following to the main method.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>moveMonster</span><span class='p'>();</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">moveMonster</span><span class="p">();</span></code></pre></div>
+
 <p>Add the following to the monster array.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>xDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-<span class='nx'>monster</span><span class='p'>.</span><span class='nx'>yDirection</span> <span class='o'>=</span> <span class='nx'>monster</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+<span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span></code></pre></div>
+
 <p>This goes at the bottom of your file to tell the monster to change direction every half second</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>setInterval</span><span class='p'>(</span><span class='nx'>updateMonsterDirection</span><span class='p'>,</span> <span class='mi'>500</span><span class='p'>;</span>
-</code></pre></div>
-<p>But what if we wanted to control the hero using the arrow keys? It would be the same logic just based on input from the keyboard. Here’s how we receive input from the keyboard.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>keysDown</span> <span class='o'>=</span> <span class='p'>{};</span>
 
-<span class='nx'>addEventListener</span><span class='p'>(</span><span class='s2'>&quot;keydown&quot;</span><span class='p'>,</span> <span class='kd'>function</span> <span class='p'>(</span><span class='nx'>e</span><span class='p'>)</span> <span class='p'>{</span>
-	<span class='nx'>keysDown</span><span class='p'>[</span><span class='nx'>e</span><span class='p'>.</span><span class='nx'>keyCode</span><span class='p'>]</span> <span class='o'>=</span> <span class='kc'>true</span><span class='p'>;</span>
-<span class='p'>},</span> <span class='kc'>false</span><span class='p'>);</span>
+<div class="highlight"><pre><code class="javascript"><span class="nx">setInterval</span><span class="p">(</span><span class="nx">updateMonsterDirection</span><span class="p">,</span> <span class="mi">500</span><span class="p">;</span></code></pre></div>
 
-<span class='nx'>addEventListener</span><span class='p'>(</span><span class='s2'>&quot;keyup&quot;</span><span class='p'>,</span> <span class='kd'>function</span> <span class='p'>(</span><span class='nx'>e</span><span class='p'>)</span> <span class='p'>{</span>
-	<span class='k'>delete</span> <span class='nx'>keysDown</span><span class='p'>[</span><span class='nx'>e</span><span class='p'>.</span><span class='nx'>keyCode</span><span class='p'>];</span>
-<span class='p'>},</span> <span class='kc'>false</span><span class='p'>);</span>
+<p>But what if we wanted to control the hero using the arrow keys?
+It would be the same logic just based on input from the keyboard.
+Here’s how we receive input from the keyboard.</p>
 
-<span class='kd'>var</span> <span class='nx'>moveHero</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='mi'>38</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding up</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='mi'>40</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding down</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>y</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='mi'>37</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding left</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>-=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='k'>if</span><span class='p'>(</span><span class='mi'>39</span> <span class='k'>in</span> <span class='nx'>keysDown</span><span class='p'>)</span> <span class='p'>{</span> <span class='c1'>// Player holding right</span>
-		<span class='nx'>hero</span><span class='p'>.</span><span class='nx'>x</span> <span class='o'>+=</span> <span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span><span class='p'>;</span>
-	<span class='p'>}</span>
-	<span class='nx'>resetObjectLocation</span><span class='p'>(</span><span class='nx'>hero</span><span class='p'>);</span>
-<span class='p'>};</span>
-</code></pre></div>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">keysDown</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;keydown&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">keysDown</span><span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;keyup&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">delete</span> <span class="nx">keysDown</span><span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">];</span>
+<span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">moveHero</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="mi">38</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding up</span>
+		<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">-=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="mi">40</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding down</span>
+		<span class="nx">hero</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="mi">37</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding left</span>
+		<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">-=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span><span class="p">(</span><span class="mi">39</span> <span class="k">in</span> <span class="nx">keysDown</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Player holding right</span>
+		<span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="nx">resetObjectLocation</span><span class="p">(</span><span class="nx">hero</span><span class="p">);</span>
+<span class="p">};</span></code></pre></div>
+
 <p>Don’t forget to add speed to your hero array.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>hero</span><span class='p'>.</span><span class='nx'>speed</span> <span class='o'>=</span> <span class='mi'>15</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span></code></pre></div>
+
 <p>And add moveHero method call to your main method.</p>
-<div class='highlight'><pre><code class='javascript'><span class='nx'>moveHero</span><span class='p'>();</span>
-</code></pre></div>
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster">download</a> this example.</p></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="nx">moveHero</span><span class="p">();</span></code></pre></div>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster">download</a> this example.</p>
+
+</div>
 	</article>
 
 	<article class="post">
 		
 			<h1><a href="/2014/03/16/javascript-canvas-game-add-a-hero/">Javascript Canvas Game Add a Hero</a></h1>
 		
-		<div class="post-content"><p>Let’s add a hero to our javascript arena. You’ll need a hero.png image</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>heroImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>heroImage</span><span class='p'>.</span><span class='nx'>onload</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>heroImage</span><span class='p'>,</span> <span class='mi'>474</span><span class='p'>,</span> <span class='mi'>287</span><span class='p'>);</span>
-<span class='p'>};</span>
-<span class='nx'>heroImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/hero.png&quot;</span><span class='p'>;</span>
-</code></pre></div>
+		<div class="post-content"><p>Let’s add a hero to our javascript arena.
+You’ll need a hero.png image</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">heroImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">heroImage</span><span class="p">,</span> <span class="mi">474</span><span class="p">,</span> <span class="mi">287</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">heroImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/hero.png&quot;</span><span class="p">;</span></code></pre></div>
+
 <p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/hero.png?raw=true" alt="Background Image" /></p>
 
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p></div>
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p>
+
+</div>
 	</article>
 
 	<article class="post">
 		
 			<h1><a href="/2014/03/16/javascript-canvas-game-create-a-page/">Javascript Canvas Game Create a Page</a></h1>
 		
-		<div class="post-content"><p>First create an index page. You can name this file anything you want as long as it is saved as an html extension. This is where your game lives. You can see it by opening your index page.</p>
-<div class='highlight'><pre><code class='html'><span class='cp'>&lt;!DOCTYPE html&gt;</span>
-<span class='nt'>&lt;html</span> <span class='na'>lang=</span><span class='s'>&quot;en&quot;</span><span class='nt'>&gt;</span>
-	<span class='nt'>&lt;head&gt;</span>
-		<span class='nt'>&lt;meta</span> <span class='na'>charset=</span><span class='s'>&quot;utf-8&quot;</span><span class='nt'>&gt;</span>
-		<span class='nt'>&lt;title&gt;</span>Simple Canvas Game<span class='nt'>&lt;/title&gt;</span>
-		<span class='nt'>&lt;style&gt;</span>
-			<span class='nt'>html</span><span class='o'>,</span><span class='nt'>body</span> <span class='p'>{</span> <span class='k'>margin</span><span class='o'>:</span> <span class='m'>0px</span><span class='p'>;</span> <span class='k'>padding</span><span class='o'>:</span> <span class='m'>0px</span><span class='p'>;</span> <span class='p'>}</span>
-			<span class='nt'>body</span> <span class='p'>{</span> <span class='k'>background-image</span><span class='o'>:</span> <span class='sx'>url(images/background.jpg)</span><span class='p'>;</span> <span class='p'>}</span>
-		<span class='nt'>&lt;/style&gt;</span>
-	<span class='nt'>&lt;/head&gt;</span>
-	<span class='nt'>&lt;body&gt;</span>
-		<span class='nt'>&lt;script </span><span class='na'>src=</span><span class='s'>&quot;js/main.js&quot;</span><span class='nt'>&gt;&lt;/script&gt;</span>
-	<span class='nt'>&lt;/body&gt;</span>
-<span class='nt'>&lt;/html&gt;</span>
-</code></pre></div>
-<p>It won’t look like much of anything yet. Let’s fix that by adding a background image. Your index page says the background image is located at images/background.jpg. So let’s create a folder in the same place as your index page and add a background.jpg image in it. <img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/background.jpg?raw=true" alt="Background Image" /></p>
+		<div class="post-content"><p>First create an index page.
+You can name this file anything you want as long as it is saved as an html extension.
+This is where your game lives.
+You can see it by opening your index page.</p>
 
-<p>The game will be built on a javascript engine using acanvas. First add a js folder and put a main.js file in it. Adding the following with create a canvas with dimensions 979pixels X 606pixels and add it to the index page.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>canvas</span> <span class='o'>=</span> <span class='nb'>document</span><span class='p'>.</span><span class='nx'>createElement</span><span class='p'>(</span><span class='s2'>&quot;canvas&quot;</span><span class='p'>);</span>
-<span class='kd'>var</span> <span class='nx'>ctx</span> <span class='o'>=</span> <span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>getContext</span><span class='p'>(</span><span class='s2'>&quot;2d&quot;</span><span class='p'>);</span>
-<span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>width</span> <span class='o'>=</span> <span class='mi'>979</span><span class='p'>;</span>
-<span class='nx'>canvas</span><span class='p'>.</span><span class='nx'>height</span> <span class='o'>=</span> <span class='mi'>606</span><span class='p'>;</span>
-<span class='nb'>document</span><span class='p'>.</span><span class='nx'>body</span><span class='p'>.</span><span class='nx'>appendChild</span><span class='p'>(</span><span class='nx'>canvas</span><span class='p'>);</span>
-</code></pre></div>
+<div class="highlight"><pre><code class="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>Simple Canvas Game<span class="nt">&lt;/title&gt;</span>
+		<span class="nt">&lt;style&gt;</span>
+			<span class="nt">html</span><span class="o">,</span><span class="nt">body</span> <span class="p">{</span> <span class="k">margin</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span> <span class="k">padding</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span> <span class="p">}</span>
+			<span class="nt">body</span> <span class="p">{</span> <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(images/background.jpg)</span><span class="p">;</span> <span class="p">}</span>
+		<span class="nt">&lt;/style&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/main.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span></code></pre></div>
+
+<p>It won’t look like much of anything yet.
+Let’s fix that by adding a background image.
+Your index page says the background image is located at images/background.jpg.
+So let’s create a folder in the same place as your index page and add a background.jpg image in it.
+<img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/background.jpg?raw=true" alt="Background Image" /></p>
+
+<p>The game will be built on a javascript engine using acanvas.
+First add a js folder and put a main.js file in it.
+Adding the following with create a canvas with dimensions 979pixels X 606pixels and add it to the index page.</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;canvas&quot;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">&quot;2d&quot;</span><span class="p">);</span>
+<span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">979</span><span class="p">;</span>
+<span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">606</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">canvas</span><span class="p">);</span></code></pre></div>
+
 <p>The following will create a background image and draw it on the canvas.</p>
-<div class='highlight'><pre><code class='javascript'><span class='kd'>var</span> <span class='nx'>bgImage</span> <span class='o'>=</span> <span class='k'>new</span> <span class='nx'>Image</span><span class='p'>();</span>
-<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>onload</span> <span class='o'>=</span> <span class='kd'>function</span> <span class='p'>()</span> <span class='p'>{</span>
-	<span class='nx'>ctx</span><span class='p'>.</span><span class='nx'>drawImage</span><span class='p'>(</span><span class='nx'>bgImage</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>);</span>
-<span class='p'>};</span>
-<span class='nx'>bgImage</span><span class='p'>.</span><span class='nx'>src</span> <span class='o'>=</span> <span class='s2'>&quot;images/canvas_background.png&quot;</span><span class='p'>;</span>
-</code></pre></div>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">bgImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">bgImage</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">bgImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/canvas_background.png&quot;</span><span class="p">;</span></code></pre></div>
+
 <p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/canvas_background.png?raw=true" alt="Background Image" /></p>
 
-<p>You’ll notice that there is an onload function called. It takes time for javascript to load up the background image.</p>
+<p>You’ll notice that there is an onload function called.
+It takes time for javascript to load up the background image.</p>
 
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/start">download</a> this example.</p></div>
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/start">download</a> this example.</p>
+
+</div>
 	</article>
 
 
