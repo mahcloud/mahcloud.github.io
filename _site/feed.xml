@@ -8,6 +8,108 @@
 		
 			<item>
 				<title>Chef - Server Provisioning Software</title>
+				<description>&lt;p&gt;So, I got to the point where I wanted a clean slate so I reformatted and started my mac over with a clean install.
+I’m setting up things that I haven’t configured in a long time.
+It’s good for my memory though.&lt;/p&gt;
+
+&lt;p&gt;Problem #1
+I’m running&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;bundle install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;on ruby version 1.9.2 for a chef repository. It seems to have a problem installing the nokogiri gem. &lt;a href=&quot;https://github.com/sparklemotion/nokogiri&quot;&gt;Nokogiri&lt;/a&gt; is a HTML, XML, SAX, and Reader parser.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;bundle install
+Fetching gem metadata from https://rubygems.org/.......
+Fetching additional metadata from https://rubygems.org/..
+Using rake 10.3.1
+Using builder 3.2.2
+Using gyoku 1.1.1
+Using mini_portile 0.5.3
+sh: -c: line 0: unexpected EOF &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;looking &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;matching &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;sh: -c: line 1: syntax error: unexpected end of file&lt;/span&gt;
+
+&lt;span class=&quot;s2&quot;&gt;Gem::Ext::BuildError: ERROR: Failed to build gem native extension.&lt;/span&gt;
+
+&lt;span class=&quot;s2&quot;&gt;    /Users/mahcloud/.rvm/rubies/ruby-1.9.2-p320/bin/ruby extconf.rb &amp;quot;&lt;/span&gt;--with-xml2-include&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/libxml2/2.7.8/include/libxml2 --with-xml2-lib&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/libxml2/2.7.8/lib --with-xslt-dir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar
+
+extconf failed, &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 2
+
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;inspection.
+Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out
+An error occurred &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;installing nokogiri &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.6.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, and Bundler cannot &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;.
+Make sure that &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;gem install nokogiri -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;1.6.2&amp;#39;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; succeeds before bundling.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I take the advice and run &lt;code&gt;gem install nokogiri -v &#39;1.6.2&#39;&lt;/code&gt; which fails because it can’t find the libiconv native library.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;gem install nokogiri -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;1.6.2&amp;#39;&lt;/span&gt;
+Building native extensions.  This could take a &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;...
+Building nokogiri using packaged libraries.
+ERROR:  Error installing nokogiri:
+	ERROR: Failed to build gem native extension.
+
+    /Users/mahcloud/.rvm/rubies/ruby-1.9.2-p320/bin/ruby extconf.rb
+Building nokogiri using packaged libraries.
+-----
+libiconv is missing.  please visit http://nokogiri.org/tutorials/installing_nokogiri.html &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;help &lt;/span&gt;with installing dependencies.
+-----
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more
+details.  You may need configuration options.
+
+Provided configuration options:
+	--with-opt-dir
+	--with-opt-include
+	--without-opt-include&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;opt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/include
+	--with-opt-lib
+	--without-opt-lib&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;opt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/lib
+	--with-make-prog
+	--without-make-prog
+	--srcdir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.
+	--curdir
+	--ruby&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/mahcloud/.rvm/rubies/ruby-1.9.2-p320/bin/ruby
+	--help
+	--clean
+	--use-system-libraries
+	--enable-static
+	--disable-static
+	--with-zlib-dir
+	--without-zlib-dir
+	--with-zlib-include
+	--without-zlib-include&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;zlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/include
+	--with-zlib-lib
+	--without-zlib-lib&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;zlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/lib
+	--enable-cross-build
+	--disable-cross-build
+
+extconf failed, &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 1
+
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;inspection.
+Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.gnu.org/software/libiconv/&quot;&gt;libiconv&lt;/a&gt; is a library that converts string encodings from or to unicode. libiconv comes standard on my mac, but for some reason nokogiri thinks it is missing.&lt;/p&gt;
+
+&lt;p&gt;So we need install libiconv again and tell nokogiri where libiconv is. Some options for installing libiconv are macports and brew. I installed with brew. And then ran.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;gem install nokogiri -- --with-iconv-dir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/libiconv/1.14/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This installed successfully. This fixed the problem in my development environment for my site, but for the chef repository, it still doesn’t recognize that nokogiri is installed.&lt;/p&gt;
+
+&lt;p&gt;Next, I ran&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;xcode-select --install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This installs the command-line developer tools for mac, which includes libiconv. Install nokogiri version as normal and that took care of the problem.&lt;/p&gt;
+
+</description>
+				<pubDate>Tue, 17 Jun 2014 07:17:00 -0500</pubDate>
+				<link>http://www.mikehoffert.com/2014/06/17/chef-bundle-install/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/17/chef-bundle-install/</guid>
+			</item>
+		
+			<item>
+				<title>Chef - Server Provisioning Software</title>
 				<description>&lt;p&gt;Okay, today I’m wearing my chef loves bacon hat. Today’s goal is to get started with Chef for provisioning load balanced API servers.&lt;/p&gt;
 
 &lt;p&gt;I’ll be starting out on a &lt;a href=&quot;http://railscasts.com/episodes/339-chef-solo-basics&quot;&gt;railscast&lt;/a&gt; video. Well this video is on chef-solo and I’ll be using chef server, so not as much help as I was hoping. Next I went through this &lt;a href=&quot;http://gettingstartedwithchef.com/&quot;&gt;tutorial&lt;/a&gt;, but it just flat out didn’t work, so I stopped half way through. My boss suggested this &lt;a href=&quot;https://learnchef.opscode.com/screencasts/spring-fundamentals/week-1/&quot;&gt;video series&lt;/a&gt;, but it is beyond boring and overly complex. We’ll be using &lt;a href=&quot;http://www.getchef.com/&quot;&gt;opscode&lt;/a&gt; to host our chef server.&lt;/p&gt;
