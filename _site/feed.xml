@@ -145,7 +145,7 @@ FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;ho
 &lt;span class=&quot;c1&quot;&gt;#host    replication     postgres        127.0.0.1/32            md5&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#host    replication     postgres        ::1/128                 md5&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. [pg_hba_configure][Here] is another for customizing that configuration file.&lt;/p&gt;
+&lt;p&gt;The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. &lt;a href=&quot;http://stackoverflow.com/questions/1406025/no-pg-hba-conf-entry-for-host&quot;&gt;Here&lt;/a&gt; is another for customizing that configuration file.&lt;/p&gt;
 
 </description>
 				<pubDate>Tue, 17 Jun 2014 09:37:00 -0500</pubDate>
