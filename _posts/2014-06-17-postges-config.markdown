@@ -143,7 +143,7 @@ host    all             all             ::1/128                 md5
 #host    replication     postgres        127.0.0.1/32            md5
 #host    replication     postgres        ::1/128                 md5
 {% endhighlight %}
-The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. [Here][pg_hba_configure] is another for customizing that configuration file.
+The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. [pg_hba_configure][Here] is another for customizing that configuration file.
 
 
 [pg_hba]: http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html
