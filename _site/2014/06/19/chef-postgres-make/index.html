@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Chef - Installing Postgres - No Make file</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014/06/19/chef-postgres-make/">Chef - Installing Postgres - No Make file</a></h1>
+	
+	<div class="post-content"><p>I had to reformat my mac because of a bad installation of virtual box.
+I’m now using Vagrant 1.5.4 and VirtualBox 4.3.6
+I’m just working through all the little bug nuances. Here’s one of them I thought I would mention.</p>
+
+<div class="highlight"><pre><code class="bash"><span class="o">[</span>2014-06-19T13:34:28-05:00<span class="o">]</span> WARN: Failed to properly build pg gem. Forcing properly linking and retrying <span class="o">(</span>omnibus fix<span class="o">)</span>
+  * execute<span class="o">[</span>generate pg gem Makefile<span class="o">]</span> action run
+    - execute /opt/chef/embedded/bin/ruby extconf.rb
+
+  * execute<span class="o">[</span>make pg gem lib<span class="o">]</span> action <span class="nv">run</span>
+<span class="o">================================================================================</span>
+Error executing action <span class="sb">`</span>run<span class="sb">`</span> on resource <span class="s1">&#39;execute[make pg gem lib]&#39;</span>
+<span class="o">================================================================================</span>
+
+
+Errno::ENOENT
+-------------
+No such file or directory - make
+
+
+Cookbook Trace:
+---------------
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:112:in <span class="sb">`</span>rescue in rescue in from_file<span class="s1">&#39;</span>
+<span class="s1">/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:63:in `rescue in from_file&#39;</span>
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:24:in <span class="sb">`</span>from_file<span class="s1">&#39;</span>
+<span class="s1">/var/chef/cache/cookbooks/slice/recipes/default.rb:44:in `from_file&#39;</span>
+
+
+Resource Declaration:
+---------------------
+<span class="c"># In /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb</span>
+
+107:     <span class="nv">lib_maker</span> <span class="o">=</span> execute <span class="s1">&#39;make pg gem lib&#39;</span> <span class="k">do</span>
+108:       <span class="nb">command</span> <span class="s1">&#39;make&#39;</span>
+109:       cwd ext_dir
+110:       action :nothing
+111:     end
+112:     lib_maker.run_action<span class="o">(</span>:run<span class="o">)</span>
+
+
+
+Compiled Resource:
+------------------
+<span class="c"># Declared in /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:107:in `rescue in rescue in from_file&#39;</span>
+
+execute<span class="o">(</span><span class="s2">&quot;make pg gem lib&quot;</span><span class="o">)</span> <span class="k">do</span>
+<span class="k">  </span>action <span class="o">[</span>:nothing<span class="o">]</span>
+  retries 0
+  retry_delay 2
+  <span class="nb">command</span> <span class="s2">&quot;make&quot;</span>
+  backup 5
+  cwd <span class="s2">&quot;/opt/chef/embedded/lib/ruby/gems/1.9.1/gems/pg-0.17.1/ext&quot;</span>
+  returns 0
+  cookbook_name <span class="s2">&quot;postgresql&quot;</span>
+  recipe_name <span class="s2">&quot;ruby&quot;</span>
+<span class="nv">end</span>
+
+
+
+
+<span class="o">================================================================================</span>
+Recipe Compile Error in /var/chef/cache/cookbooks/slice/recipes/default.rb
+<span class="o">================================================================================</span>
+
+
+Errno::ENOENT
+-------------
+execute<span class="o">[</span>make pg gem lib<span class="o">]</span> <span class="o">(</span>postgresql::ruby line 107<span class="o">)</span> had an error: Errno::ENOENT: No such file or directory - make
+
+
+Cookbook Trace:
+---------------
+  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:112:in <span class="sb">`</span>rescue in rescue in from_file<span class="s1">&#39;</span>
+<span class="s1">  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:63:in `rescue in from_file&#39;</span>
+  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:24:in <span class="sb">`</span>from_file<span class="s1">&#39;</span>
+<span class="s1">  /var/chef/cache/cookbooks/slice/recipes/default.rb:44:in `from_file&#39;</span>
+
+
+Relevant File Content:
+----------------------
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:
+
+105:      lib_builder.run_action<span class="o">(</span>:run<span class="o">)</span>
+106:  
+107:      <span class="nv">lib_maker</span> <span class="o">=</span> execute <span class="s1">&#39;make pg gem lib&#39;</span> <span class="k">do</span>
+108:        <span class="nb">command</span> <span class="s1">&#39;make&#39;</span>
+109:        cwd ext_dir
+110:        action :nothing
+111:      end
+112&gt;&gt;     lib_maker.run_action<span class="o">(</span>:run<span class="o">)</span>
+113:  
+114:      <span class="nv">lib_installer</span> <span class="o">=</span> execute <span class="s1">&#39;install pg gem lib&#39;</span> <span class="k">do</span>
+115:        <span class="nb">command</span> <span class="s1">&#39;make install&#39;</span>
+116:        cwd ext_dir
+117:        action :nothing
+118:      end
+119:      lib_installer.run_action<span class="o">(</span>:run<span class="o">)</span>
+120:  
+121:      <span class="nv">spec_installer</span> <span class="o">=</span> execute <span class="s1">&#39;install pg spec&#39;</span> <span class="k">do</span>
+
+
+
+<span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> ERROR: Running exception handlers
+<span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> ERROR: Exception handlers <span class="nb">complete</span>
+<span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+Chef Client failed. 2 resources updated
+<span class="o">[</span>2014-06-19T13:34:36-05:00<span class="o">]</span> FATAL: Chef::Exceptions::ChildConvergeError: Chef run process exited unsuccessfully <span class="o">(</span><span class="nb">exit </span>code 1<span class="o">)</span></code></pre></div>
+
+<p>First thing I found was that the make library is part of build-essentials. So if I include that with</p>
+
+<div class="highlight"><pre><code class="bash">include_recipe <span class="s2">&quot;build-essential&quot;</span></code></pre></div>
+
+</div>
+	<p class="meta">Posted on <span class="postdate">Jun 19, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>

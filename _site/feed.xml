@@ -7,6 +7,125 @@
 		<atom:link href="http://www.mikehoffert.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Chef - Installing Postgres - No Make file</title>
+				<description>&lt;p&gt;I had to reformat my mac because of a bad installation of virtual box.
+I’m now using Vagrant 1.5.4 and VirtualBox 4.3.6
+I’m just working through all the little bug nuances. Here’s one of them I thought I would mention.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:28-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; WARN: Failed to properly build pg gem. Forcing properly linking and retrying &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;omnibus fix&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  * execute&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;generate pg gem Makefile&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; action run
+    - execute /opt/chef/embedded/bin/ruby extconf.rb
+
+  * execute&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;make pg gem lib&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; action &lt;span class=&quot;nv&quot;&gt;run&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;================================================================================&lt;/span&gt;
+Error executing action &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;run&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; on resource &lt;span class=&quot;s1&quot;&gt;&amp;#39;execute[make pg gem lib]&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;================================================================================&lt;/span&gt;
+
+
+Errno::ENOENT
+-------------
+No such file or directory - make
+
+
+Cookbook Trace:
+---------------
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:112:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;rescue in rescue in from_file&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:63:in `rescue in from_file&amp;#39;&lt;/span&gt;
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:24:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;from_file&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;/var/chef/cache/cookbooks/slice/recipes/default.rb:44:in `from_file&amp;#39;&lt;/span&gt;
+
+
+Resource Declaration:
+---------------------
+&lt;span class=&quot;c&quot;&gt;# In /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb&lt;/span&gt;
+
+107:     &lt;span class=&quot;nv&quot;&gt;lib_maker&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; execute &lt;span class=&quot;s1&quot;&gt;&amp;#39;make pg gem lib&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+108:       &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;make&amp;#39;&lt;/span&gt;
+109:       cwd ext_dir
+110:       action :nothing
+111:     end
+112:     lib_maker.run_action&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:run&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+
+
+Compiled Resource:
+------------------
+&lt;span class=&quot;c&quot;&gt;# Declared in /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:107:in `rescue in rescue in from_file&amp;#39;&lt;/span&gt;
+
+execute&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;make pg gem lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;  &lt;/span&gt;action &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;:nothing&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  retries 0
+  retry_delay 2
+  &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;make&amp;quot;&lt;/span&gt;
+  backup 5
+  cwd &lt;span class=&quot;s2&quot;&gt;&amp;quot;/opt/chef/embedded/lib/ruby/gems/1.9.1/gems/pg-0.17.1/ext&amp;quot;&lt;/span&gt;
+  returns 0
+  cookbook_name &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgresql&amp;quot;&lt;/span&gt;
+  recipe_name &lt;span class=&quot;s2&quot;&gt;&amp;quot;ruby&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;end&lt;/span&gt;
+
+
+
+
+&lt;span class=&quot;o&quot;&gt;================================================================================&lt;/span&gt;
+Recipe Compile Error in /var/chef/cache/cookbooks/slice/recipes/default.rb
+&lt;span class=&quot;o&quot;&gt;================================================================================&lt;/span&gt;
+
+
+Errno::ENOENT
+-------------
+execute&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;make pg gem lib&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;postgresql::ruby line 107&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; had an error: Errno::ENOENT: No such file or directory - make
+
+
+Cookbook Trace:
+---------------
+  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:112:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;rescue in rescue in from_file&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:63:in `rescue in from_file&amp;#39;&lt;/span&gt;
+  /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:24:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;from_file&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;  /var/chef/cache/cookbooks/slice/recipes/default.rb:44:in `from_file&amp;#39;&lt;/span&gt;
+
+
+Relevant File Content:
+----------------------
+/var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:
+
+105:      lib_builder.run_action&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:run&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+106:  
+107:      &lt;span class=&quot;nv&quot;&gt;lib_maker&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; execute &lt;span class=&quot;s1&quot;&gt;&amp;#39;make pg gem lib&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+108:        &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;make&amp;#39;&lt;/span&gt;
+109:        cwd ext_dir
+110:        action :nothing
+111:      end
+112&amp;gt;&amp;gt;     lib_maker.run_action&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:run&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+113:  
+114:      &lt;span class=&quot;nv&quot;&gt;lib_installer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; execute &lt;span class=&quot;s1&quot;&gt;&amp;#39;install pg gem lib&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+115:        &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;make install&amp;#39;&lt;/span&gt;
+116:        cwd ext_dir
+117:        action :nothing
+118:      end
+119:      lib_installer.run_action&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:run&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+120:  
+121:      &lt;span class=&quot;nv&quot;&gt;spec_installer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; execute &lt;span class=&quot;s1&quot;&gt;&amp;#39;install pg spec&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+
+
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; ERROR: Running exception handlers
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; ERROR: Exception handlers &lt;span class=&quot;nb&quot;&gt;complete&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+Chef Client failed. 2 resources updated
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:36-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; FATAL: Chef::Exceptions::ChildConvergeError: Chef run process exited unsuccessfully &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;First thing I found was that the make library is part of build-essentials. So if I include that with&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;include_recipe &lt;span class=&quot;s2&quot;&gt;&amp;quot;build-essential&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+				<pubDate>Thu, 19 Jun 2014 08:37:00 -0500</pubDate>
+				<link>http://www.mikehoffert.com/2014/06/19/chef-postgres-make/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/19/chef-postgres-make/</guid>
+			</item>
+		
+			<item>
 				<title>Chef - Server Provisioning Software</title>
 				<description>&lt;p&gt;I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following&lt;/p&gt;
 
@@ -671,27 +790,6 @@ Here’s how we receive input from the keyboard.&lt;/p&gt;
 				<pubDate>Sun, 16 Mar 2014 07:30:00 -0500</pubDate>
 				<link>http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-monster/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-monster/</guid>
-			</item>
-		
-			<item>
-				<title>Javascript Canvas Game Add a Hero</title>
-				<description>&lt;p&gt;Let’s add a hero to our javascript arena.
-You’ll need a hero.png image&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;heroImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;heroImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;drawImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;heroImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;474&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;287&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;heroImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;images/hero.png&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/hero.png?raw=true&quot; alt=&quot;Background Image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can &lt;a href=&quot;https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero&quot;&gt;download&lt;/a&gt; this example.&lt;/p&gt;
-
-</description>
-				<pubDate>Sun, 16 Mar 2014 07:15:00 -0500</pubDate>
-				<link>http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-a-hero/</link>
-				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/16/javascript-canvas-game-add-a-hero/</guid>
 			</item>
 		
 	</channel>

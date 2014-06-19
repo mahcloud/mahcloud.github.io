@@ -38,6 +38,26 @@
 				
 	<article class="post">
 		
+			<h1><a href="/2014/03/16/javascript-canvas-game-add-a-hero/">Javascript Canvas Game Add a Hero</a></h1>
+		
+		<div class="post-content"><p>Let’s add a hero to our javascript arena.
+You’ll need a hero.png image</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<span class="nx">heroImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">heroImage</span><span class="p">,</span> <span class="mi">474</span><span class="p">,</span> <span class="mi">287</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">heroImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/hero.png&quot;</span><span class="p">;</span></code></pre></div>
+
+<p><img src="https://github.com/mahcloud/SimpleCanvasGame/blob/master/images/hero.png?raw=true" alt="Background Image" /></p>
+
+<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero">download</a> this example.</p>
+
+</div>
+	</article>
+
+	<article class="post">
+		
 			<h1><a href="/2014/03/16/javascript-canvas-game-create-a-page/">Javascript Canvas Game Create a Page</a></h1>
 		
 		<div class="post-content"><p>First create an index page.
