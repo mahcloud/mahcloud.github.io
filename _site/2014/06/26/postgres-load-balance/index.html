@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Chef - Installing Postgres - Load Balanced Servers</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2014/06/26/postgres-load-balance/">Chef - Installing Postgres - Load Balanced Servers</a></h1>
+	
+	<div class="post-content"><p>I want to talk about provisioning a postgres server for a load balanced production rails application. This is probably a topic that everyone will come across. You want a live rails application and it starts becoming a bigger deal, you need to spin up more servers and have them load balanced. Well, in that case, you need one server that has the database and all the other application servers to talk to it. No big deal, right. Well, I’m using chef to provision my servers and I got stuck on a very simple thing. Okay, I provisioned my servers, but how do I get the password for my provisioned server so my application can talk to my database. Seems simple enough, but where is that password.</p>
+
+<p>The postgres password is stored in the node config file. To access this using chef knife:</p>
+
+<div class="highlight"><pre><code class="bash">knife edit node SERVER-NAME</code></pre></div>
+
+<p>So simple, but I just didn’t know where it was. I thought I would make note, so no more time is wasted.</p>
+</div>
+	<p class="meta">Posted on <span class="postdate">Jun 26, 2014</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>
