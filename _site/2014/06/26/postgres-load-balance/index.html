@@ -58,6 +58,11 @@ DEBUG <span class="o">[]</span> 		TCP/IP connections on port 5432?</code></pre><
 I read <a href="http://www.postgresql.org/message-id/004e01c22c05$18be79b0$05faa8c0@edios">this article</a> on tcp/ip configurations with postgres, but when I added <code>tcpip_socket = true</code>, it ran errors.
 I then found <a href="http://stackoverflow.com/questions/17648677/is-the-server-running-on-host-localhost-1-and-accepting-tcp-ip-connections">this article</a> on setting up your postgres server to listen outside of localhost. That seemed to do the trick.</p>
 
+<p>Naturally, my next thoughts are <code>awesome! this works but can I automate this for next time?</code>. So I go to the documentation and of course it’s right <a href="https://github.com/hw-cookbooks/postgresql">there</a> in front of me. Adding these 2 lines does the exact same thing as I described above which means I am now fully automated.</p>
+
+<div class="highlight"><pre><code class="bash">node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;config&#39;</span><span class="o">][</span><span class="s1">&#39;listen_addresses&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;pg_hba&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[{</span>:type <span class="o">=</span>&gt; <span class="s1">&#39;host&#39;</span>, :db <span class="o">=</span>&gt; <span class="s1">&#39;all&#39;</span>, :user <span class="o">=</span>&gt; <span class="s1">&#39;postgres&#39;</span>, :addr <span class="o">=</span>&gt; <span class="s1">&#39;IPADDRESS/32&#39;</span>, :method <span class="o">=</span>&gt; <span class="s1">&#39;md5&#39;</span><span class="o">}]</span></code></pre></div>
+
 </div>
 	<p class="meta">Posted on <span class="postdate">Jun 26, 2014</span></p>
 </article>

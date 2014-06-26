@@ -34,5 +34,14 @@ I read [this article][tcpip_socket] on tcp/ip configurations with postgres, but 
 I then found [this article][listen_addresses] on setting up your postgres server to listen outside of localhost. That seemed to do the trick.
 
 
+Naturally, my next thoughts are `awesome! this works but can I automate this for next time?`. So I go to the documentation and of course it's right [there][postgres-cookbook] in front of me. Adding these 2 lines does the exact same thing as I described above which means I am now fully automated.
+
+
+{% highlight bash %}
+node.default['postgresql']['config']['listen_addresses'] = '*'
+node.default['postgresql']['pg_hba'] = [{:type => 'host', :db => 'all', :user => 'postgres', :addr => 'IPADDRESS/32', :method => 'md5'}]
+{% endhighlight %}
+
 [tcpip_socket]: http://www.postgresql.org/message-id/004e01c22c05$18be79b0$05faa8c0@edios
 [listen_addresses]: http://stackoverflow.com/questions/17648677/is-the-server-running-on-host-localhost-1-and-accepting-tcp-ip-connections
+[postgres-cookbook]: https://github.com/hw-cookbooks/postgresql
