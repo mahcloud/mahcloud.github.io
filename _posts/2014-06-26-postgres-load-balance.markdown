@@ -16,4 +16,23 @@ knife edit node SERVER-NAME
 {% endhighlight %}
 
 
+
 So simple, but I just didn't know where it was. I thought I would make note, so no more time is wasted.
+
+
+A couple other notes about connecting to a postgres server. After chef provisioning, when I ran cap deployment, I was running into this error:
+{% highlight bash %}
+	rake aborted!
+DEBUG [] 	PG::ConnectionBad: could not connect to server: Connection refused
+DEBUG [] 		Is the server running on host "IP_ADDRESS" and accepting
+DEBUG [] 		TCP/IP connections on port 5432?
+{% endhighlight %}
+
+
+So first thoughts turned to, is my server configured to accept tcp/ip connections? What port is my postgres server running on?
+I read [this article][tcpip_socket] on tcp/ip configurations with postgres, but when I added `tcpip_socket = true`, it ran errors.
+I then found [this article][listen_addresses] on setting up your postgres server to listen outside of localhost. That seemed to do the trick.
+
+
+[tcpip_socket]: http://www.postgresql.org/message-id/004e01c22c05$18be79b0$05faa8c0@edios
+[listen_addresses]: http://stackoverflow.com/questions/17648677/is-the-server-running-on-host-localhost-1-and-accepting-tcp-ip-connections
