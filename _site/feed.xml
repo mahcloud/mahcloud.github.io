@@ -1,4 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>Mike Hoffert</title>
@@ -7,18 +44,92 @@
 		<atom:link href="http://www.mikehoffert.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Ransack</title>
+				<description>&lt;h1 id=&quot;dashboard-main-project&quot;&gt;Dashboard: main project&lt;/h1&gt;
+
+&lt;p&gt;This week I had the unique task of building a fully interactive dashboard. A system that not only displays a large amount of analytics from all over the site, but does it in a way that admins can drill into the information and get immediate data updates.&lt;/p&gt;
+
+&lt;p&gt;The first problem is handling all the different types of data on different pages without redundant code. I handled this using &lt;a href=&quot;http://railscasts.com/episodes/99-complex-partials&quot;&gt;Rails partial views&lt;/a&gt; under the dashboard namespace. So, if I wanted a table of user data I would get the app/views/dashboard/users/_table.html.haml parital. I chose to use &lt;a href=&quot;http://railscasts.com/episodes/136-jquery-ajax-revised&quot;&gt;rails remote&lt;/a&gt; forms to handle the AJAX loading.&lt;/p&gt;
+
+&lt;h2 id=&quot;ransack&quot;&gt;Ransack&lt;/h2&gt;
+
+&lt;p&gt;At this point I had a dashboard that I could click into and see that data on another page. The code was clean because it was being reused. The big problem was that based on feedback we needed pages that could be drilled into on the same page too. So, an admin could click on a user and all other dashboard data on that page would reflect objects relating to just that user and so forth for the rest of the dashboard objects. This was a big issue in my mind because it could potentially be a limitless amount of parameters passed back and forth between a huge amount of partials. I found a Ruby Gem that was perfect for this kind of filtering called &lt;a href=&quot;https://github.com/activerecord-hackery/ransack&quot;&gt;Ransack&lt;/a&gt;. There was a great &lt;a href=&quot;http://railscasts.com/episodes/370-ransack&quot;&gt;railscast&lt;/a&gt; episode on ransack, but I found it lacking a lot of answers for my specific problem.&lt;/p&gt;
+
+&lt;p&gt;I’d like to delve into these issues. The first was that my dashboard was working off a legacy MySQL database built under a PHP framework. Ransack works based on single attributes on an object. The users controller action essentially is this simple.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ransack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;vi&quot;&gt;@users&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;distinct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The ransack call takes the q parameter that stores all the ransack filters. The next obvious question is how does the user interface interact with this. I used three different ways of interacting. I had buttons that would work as toggles to turn on certain filters and turn off other filters. I also had form fields for ‘LIKE’ searches. Last, I had table columns sortable.&lt;/p&gt;
+
+&lt;h3 id=&quot;toggle-links&quot;&gt;Toggle links&lt;/h3&gt;
+
+&lt;p&gt;The toggle links were probably the easiest step. The only real challenge was clearing out the other filters from ransack. I didn’t see anything in their documentation about clearing out other filters, so I accomplished it by simply overwriting the q param in the link.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Toggle Link&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dashboard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;remote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The helper method I’m referencing would look something like this.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nil?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;filter1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;filter2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;filter3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;custom-form-searches&quot;&gt;Custom form searches&lt;/h3&gt;
+
+&lt;p&gt;Ransack has a custom search_form_for method that takes a search object. The [:dashboard, search] references the namespaced @search variable from the users controller. I’m using a custom search here because I’d like to use my own model scope.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dashboard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;remote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_field&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The scope on the model would look something like this.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;CONCAT(firstName, &amp;#39; &amp;#39;, lastName) LIKE ?&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;%&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;%&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ransackable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_scopes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;ransackable_scopes defines all scopes that the user could access through ransack. This can be refined by the user roles, but I didn’t need this functionality. Normally custom form searches would reference something like f.search_field :name_cont that would search for users that contain the input text in the name attribute. Ransack has other search terms for equals, less than, etc.&lt;/p&gt;
+
+&lt;h3 id=&quot;column-sorts&quot;&gt;Column sorts&lt;/h3&gt;
+
+&lt;p&gt;Column sorts are very eligant in ransack.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_link&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dashboard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Name&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:desc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;remote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:get&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This header has a sort_link on the column name. The first issue here is that Name in the system is actually a function that returns a concatinated field not an attribute. Well, it turns out that ransack has a thing called ransackers that define custom algorithms for this specific situation.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;ransacker&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Arel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;CONCAT(users.firstName, &amp;quot; &amp;quot;, users.lastName)&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Setting a default sort order on the users controller would look something like this.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ransack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sorts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;name asc&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sorts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empty?&lt;/span&gt;
+&lt;span class=&quot;vi&quot;&gt;@users&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@search&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;distinct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I’m setting the defualt sort to name ascending unless another one is set.&lt;/p&gt;
+
+</description>
+				<pubDate>Wed, 02 Sep 2015 02:37:00 -0600</pubDate>
+				<link>http://www.mikehoffert.com/2015/09/02/ransack/</link>
+				<guid isPermaLink="true">http://www.mikehoffert.com/2015/09/02/ransack/</guid>
+			</item>
+		
+			<item>
 				<title>Chef - Installing Postgres - Load Balanced Servers</title>
 				<description>&lt;p&gt;I want to talk about provisioning a postgres server for a load balanced production rails application. This is probably a topic that everyone will come across. You want a live rails application and it starts becoming a bigger deal, you need to spin up more servers and have them load balanced. Well, in that case, you need one server that has the database and all the other application servers to talk to it. No big deal, right. Well, I’m using chef to provision my servers and I got stuck on a very simple thing. Okay, I provisioned my servers, but how do I get the password for my provisioned server so my application can talk to my database. Seems simple enough, but where is that password.&lt;/p&gt;
 
 &lt;p&gt;The postgres password is stored in the node config file. To access this using chef knife:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;knife edit node SERVER-NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;knife edit node SERVER-NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So simple, but I just didn’t know where it was. I thought I would make note, so no more time is wasted.&lt;/p&gt;
 
 &lt;p&gt;A couple other notes about connecting to a postgres server. After chef provisioning, when I ran cap deployment, I was running into this error:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;rake aborted!
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;rake aborted!
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	PG::ConnectionBad: could not connect to server: Connection refused
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 		Is the server running on host &lt;span class=&quot;s2&quot;&gt;&amp;quot;IP_ADDRESS&amp;quot;&lt;/span&gt; and accepting
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 		TCP/IP connections on port 5432?&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -29,11 +140,11 @@ I then found &lt;a href=&quot;http://stackoverflow.com/questions/17648677/is-the
 
 &lt;p&gt;Naturally, my next thoughts are &lt;code&gt;awesome! this works but can I automate this for next time?&lt;/code&gt;. So I go to the documentation and of course it’s right &lt;a href=&quot;https://github.com/hw-cookbooks/postgresql&quot;&gt;there&lt;/a&gt; in front of me. Adding these 2 lines does the exact same thing as I described above which means I am now fully automated.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;node.default&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;postgresql&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;config&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;listen_addresses&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;node.default&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;postgresql&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;config&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;listen_addresses&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;
 node.default&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;postgresql&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;pg_hba&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[{&lt;/span&gt;:type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;, :db &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;all&amp;#39;&lt;/span&gt;, :user &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;postgres&amp;#39;&lt;/span&gt;, :addr &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;IPADDRESS/32&amp;#39;&lt;/span&gt;, :method &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;md5&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 </description>
-				<pubDate>Thu, 26 Jun 2014 04:31:00 -0500</pubDate>
+				<pubDate>Thu, 26 Jun 2014 03:31:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/26/postgres-load-balance/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/26/postgres-load-balance/</guid>
 			</item>
@@ -44,7 +155,7 @@ node.default&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s
 I’m now using Vagrant 1.5.4 and VirtualBox 4.3.6
 I’m just working through all the little bug nuances. Here’s one of them I thought I would mention.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:28-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; WARN: Failed to properly build pg gem. Forcing properly linking and retrying &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;omnibus fix&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:28-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; WARN: Failed to properly build pg gem. Forcing properly linking and retrying &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;omnibus fix&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
   * execute&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;generate pg gem Makefile&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; action run
     - execute /opt/chef/embedded/bin/ruby extconf.rb
 
@@ -85,7 +196,7 @@ Compiled Resource:
 &lt;span class=&quot;c&quot;&gt;# Declared in /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:107:in `rescue in rescue in from_file&amp;#39;&lt;/span&gt;
 
 execute&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;make pg gem lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;  &lt;/span&gt;action &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;:nothing&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  action &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;:nothing&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
   retries 0
   retry_delay 2
   &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;make&amp;quot;&lt;/span&gt;
@@ -144,15 +255,15 @@ Relevant File Content:
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; ERROR: Running exception handlers
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; ERROR: Exception handlers &lt;span class=&quot;nb&quot;&gt;complete&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:35-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
-Chef Client failed. 2 resources updated
+Chef Client failed. &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; resources updated
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2014-06-19T13:34:36-05:00&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; FATAL: Chef::Exceptions::ChildConvergeError: Chef run process exited unsuccessfully &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;First thing I found was that the make library is part of build-essentials. So if I include that with&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;include_recipe &lt;span class=&quot;s2&quot;&gt;&amp;quot;build-essential&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;include_recipe &lt;span class=&quot;s2&quot;&gt;&amp;quot;build-essential&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 </description>
-				<pubDate>Thu, 19 Jun 2014 08:37:00 -0500</pubDate>
+				<pubDate>Thu, 19 Jun 2014 07:37:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/19/chef-postgres-make/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/19/chef-postgres-make/</guid>
 			</item>
@@ -161,9 +272,9 @@ Chef Client failed. 2 resources updated
 				<title>Chef - Server Provisioning Software</title>
 				<description>&lt;p&gt;I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;rake aborted!
-DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
-DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;rake aborted!
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;initialize&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in `new&amp;#39;&lt;/span&gt;
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;connect&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
@@ -184,19 +295,19 @@ DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared
 &lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in `new&amp;#39;&lt;/span&gt;
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;up&lt;span class=&quot;s1&quot;&gt;&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;s1&quot;&gt;DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:742:in `migrate&amp;#39;&lt;/span&gt;
-DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;block &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2 levels&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; in &amp;lt;top &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;required&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;
+DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;block &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; levels&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; in &amp;lt;top &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;required&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	Tasks: &lt;span class=&quot;nv&quot;&gt;TOP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; db:migrate
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;See full trace by running task with --trace&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 cap aborted!
 SSHKit::Command::Failed: rake &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;status: 1
 rake stdout: Nothing written
 rake stderr: rake aborted!
-PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
-FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+PG::ConnectionBad: FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL on
+FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; host &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;, user &lt;span class=&quot;s2&quot;&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;, database &lt;span class=&quot;s2&quot;&gt;&amp;quot;slice&amp;quot;&lt;/span&gt;, SSL off&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The pg_hba.conf file is generated when pg is is installed. The only problem is that I don’t want postgres installed on that server. I want the application to communicate with another server that hosts the postgres database so that I can have multiple application servers accessing the same database. So, since I’m not installing postgres, the config file is not being created. I could run &lt;code&gt;gem install pg --without-pg_config&lt;/code&gt;, but then I wouldn’t be able to run capistrano. The &lt;a href=&quot;http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html&quot;&gt;pg_hba&lt;/a&gt; file is described as a configuration file for client authentication. At first I thought this file needed to be created on the application side, but the application side actually is looking for this file on the postgres server. So, this file needs to be on the postgres server at /etc/postgresql/VERSION/main/pg_hba.conf&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# PostgreSQL Client Authentication Configuration File&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# PostgreSQL Client Authentication Configuration File&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# ===================================================&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# Refer to the &amp;quot;Client Authentication&amp;quot; section in the PostgreSQL&lt;/span&gt;
@@ -299,7 +410,7 @@ FATAL:  no pg_hba.conf entry &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;ho
 &lt;p&gt;The important line is the APPLICATION_IP that tells your postgres server where it will accept traffic from. Most of the other lines are just comments. &lt;a href=&quot;http://stackoverflow.com/questions/1406025/no-pg-hba-conf-entry-for-host&quot;&gt;Here&lt;/a&gt; is another for customizing that configuration file.&lt;/p&gt;
 
 </description>
-				<pubDate>Tue, 17 Jun 2014 09:37:00 -0500</pubDate>
+				<pubDate>Tue, 17 Jun 2014 08:37:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/17/postges-config/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/17/postges-config/</guid>
 			</item>
@@ -313,18 +424,18 @@ It’s good for my memory though.&lt;/p&gt;
 &lt;p&gt;Problem #1
 I’m running&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;bundle install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;bundle install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;on ruby version 1.9.2 for a chef repository. It seems to have a problem installing the nokogiri gem. &lt;a href=&quot;https://github.com/sparklemotion/nokogiri&quot;&gt;Nokogiri&lt;/a&gt; is a HTML, XML, SAX, and Reader parser.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;bundle install
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;bundle install
 Fetching gem metadata from https://rubygems.org/.......
 Fetching additional metadata from https://rubygems.org/..
 Using rake 10.3.1
 Using builder 3.2.2
 Using gyoku 1.1.1
 Using mini_portile 0.5.3
-sh: -c: line 0: unexpected EOF &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;looking &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;matching &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;#39;&lt;/span&gt;
+sh: -c: line 0: unexpected EOF &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; looking &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; matching &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;s2&quot;&gt;sh: -c: line 1: syntax error: unexpected end of file&lt;/span&gt;
 
 &lt;span class=&quot;s2&quot;&gt;Gem::Ext::BuildError: ERROR: Failed to build gem native extension.&lt;/span&gt;
@@ -333,14 +444,14 @@ sh: -c: line 0: unexpected EOF &lt;span class=&quot;k&quot;&gt;while &lt;/span&g
 
 extconf failed, &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 2
 
-Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;inspection.
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; inspection.
 Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out
-An error occurred &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;installing nokogiri &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.6.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, and Bundler cannot &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;.
+An error occurred &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; installing nokogiri &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.6.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, and Bundler cannot &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;.
 Make sure that &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;gem install nokogiri -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;1.6.2&amp;#39;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; succeeds before bundling.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I take the advice and run &lt;code&gt;gem install nokogiri -v &#39;1.6.2&#39;&lt;/code&gt; which fails because it can’t find the libiconv native library.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;gem install nokogiri -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;1.6.2&amp;#39;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;gem install nokogiri -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;1.6.2&amp;#39;&lt;/span&gt;
 Building native extensions.  This could take a &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;...
 Building nokogiri using packaged libraries.
 ERROR:  Error installing nokogiri:
@@ -349,11 +460,11 @@ ERROR:  Error installing nokogiri:
     /Users/mahcloud/.rvm/rubies/ruby-1.9.2-p320/bin/ruby extconf.rb
 Building nokogiri using packaged libraries.
 -----
-libiconv is missing.  please visit http://nokogiri.org/tutorials/installing_nokogiri.html &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;help &lt;/span&gt;with installing dependencies.
+libiconv is missing.  please visit http://nokogiri.org/tutorials/installing_nokogiri.html &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;help &lt;/span&gt;with installing dependencies.
 -----
 *** extconf.rb failed ***
 Could not create Makefile due to some reason, probably lack of
-necessary libraries and/or headers.  Check the mkmf.log file &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more
+necessary libraries and/or headers.  Check the mkmf.log file &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; more
 details.  You may need configuration options.
 
 Provided configuration options:
@@ -383,25 +494,25 @@ Provided configuration options:
 
 extconf failed, &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;code 1
 
-Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;inspection.
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; inspection.
 Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.gnu.org/software/libiconv/&quot;&gt;libiconv&lt;/a&gt; is a library that converts string encodings from or to unicode. libiconv comes standard on my mac, but for some reason nokogiri thinks it is missing.&lt;/p&gt;
 
 &lt;p&gt;So we need install libiconv again and tell nokogiri where libiconv is. Some options for installing libiconv are macports and brew. I installed with brew. And then ran.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;gem install nokogiri -- --with-iconv-dir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/libiconv/1.14/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;gem install nokogiri -- --with-iconv-dir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/libiconv/1.14/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This installed successfully. This fixed the problem in my development environment for my site, but for the chef repository, it still doesn’t recognize that nokogiri is installed.&lt;/p&gt;
 
 &lt;p&gt;Next, I ran&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;xcode-select --install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;xcode-select --install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This installs the command-line developer tools for mac, which includes libiconv. Install nokogiri version as normal and that took care of the problem.&lt;/p&gt;
 
 </description>
-				<pubDate>Tue, 17 Jun 2014 07:17:00 -0500</pubDate>
+				<pubDate>Tue, 17 Jun 2014 06:17:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/17/chef-bundle-install/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/17/chef-bundle-install/</guid>
 			</item>
@@ -413,7 +524,7 @@ Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/
 &lt;p&gt;I’ll be starting out on a &lt;a href=&quot;http://railscasts.com/episodes/339-chef-solo-basics&quot;&gt;railscast&lt;/a&gt; video. Well this video is on chef-solo and I’ll be using chef server, so not as much help as I was hoping. Next I went through this &lt;a href=&quot;http://gettingstartedwithchef.com/&quot;&gt;tutorial&lt;/a&gt;, but it just flat out didn’t work, so I stopped half way through. My boss suggested this &lt;a href=&quot;https://learnchef.opscode.com/screencasts/spring-fundamentals/week-1/&quot;&gt;video series&lt;/a&gt;, but it is beyond boring and overly complex. We’ll be using &lt;a href=&quot;http://www.getchef.com/&quot;&gt;opscode&lt;/a&gt; to host our chef server.&lt;/p&gt;
 
 </description>
-				<pubDate>Wed, 11 Jun 2014 02:41:00 -0500</pubDate>
+				<pubDate>Wed, 11 Jun 2014 01:41:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/11/chef-server-provisioning/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/11/chef-server-provisioning/</guid>
 			</item>
@@ -428,11 +539,11 @@ Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/
 
 &lt;p&gt;Now that we have all the background story covered, I’ve got the RoR application deploying live and to a beta staging environment. When I deploy to these boxes, I need a zero downtime switch to the new code. Since the reporting server is constantly consuming data from rabbitMQ, it would be very bad if it missed any of these queued items. I’ll be using &lt;a href=&quot;http://godrb.com/&quot;&gt;god&lt;/a&gt; to keep the rabbitMQ listener up and running even during a code deployment. So, the line I need to add to my capistrano deployment is:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo /var/god/.rvm/bin/god restart APP-NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo /var/god/.rvm/bin/god restart APP-NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I’m having a little problem here.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;Command: /usr/bin/env sudo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Command: /usr/bin/env sudo
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -h &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -K &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -k &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; -V
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -v &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
 DEBUG &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; 	usage: sudo -l &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-g group&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-h host&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-p prompt&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-U user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-u user&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
@@ -466,7 +577,7 @@ I found &lt;a href=&quot;http://ubuntuforums.org/archive/index.php/t-833765.html
 &lt;p&gt;Okay, I think was on the wrong track with the pty thing. I had to add my user as a &lt;a href=&quot;http://askubuntu.com/questions/192050/how-to-run-sudo-command-with-no-password&quot;&gt;passwordless sudo&lt;/a&gt; user for deploying. That took care of the problem.&lt;/p&gt;
 
 </description>
-				<pubDate>Tue, 10 Jun 2014 04:25:00 -0500</pubDate>
+				<pubDate>Tue, 10 Jun 2014 03:25:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/06/10/rails-god-process-management/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/06/10/rails-god-process-management/</guid>
 			</item>
@@ -486,7 +597,7 @@ I don’t want to give away anything that is in his book, so I’m just gonna sk
 &lt;p&gt;I deployed using capistrano.
 This will create the capistrano files:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;cap install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;cap install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To use capistrano you’ll need to be able to ssh authenticate with ssh key instead of password.
 &lt;a href=&quot;http://gorails.com/deploy/ubuntu/12.04&quot;&gt;Here&lt;/a&gt; is a great tutorial on how to do that.&lt;/p&gt;
@@ -495,15 +606,15 @@ This will create the capistrano files:&lt;/p&gt;
 This part was a lot easier than I thought it was going to be.
 After adding the gem and installing it, I just made a unicorn config file and ran unicorn.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;vim /etc/unicorn/mahcloud.rb&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vim /etc/unicorn/mahcloud.rb&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/home/root/mahcloud/tmp/unicorn.pid&amp;#39;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/home/root/mahcloud/tmp/unicorn.pid&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;working_directory&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/home/root/mahcloud/&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The config file has a little more to it than that.&lt;/p&gt;
 
 </description>
-				<pubDate>Wed, 09 Apr 2014 13:25:00 -0500</pubDate>
+				<pubDate>Wed, 09 Apr 2014 12:25:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/04/09/rails-app-deploy/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/04/09/rails-app-deploy/</guid>
 			</item>
@@ -533,7 +644,7 @@ After adding the gem and installing it, I just made a unicorn config file and ra
 
 &lt;p&gt;These are the image dimensions for the pokemon.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pokemon_dimensions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pokemon_dimensions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
 	&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;27&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
 	&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;27&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
 	&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
@@ -556,7 +667,7 @@ After adding the gem and installing it, I just made a unicorn config file and ra
 
 &lt;p&gt;Add this to your spawnMonster function.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;pokemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;pokemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;monsterImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;images/pokemon/&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pokemon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;.png&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pokemon_dimensions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pokemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pokemon_dimensions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pokemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -568,7 +679,7 @@ slayMonster should be catchPokemon.&lt;/p&gt;
 &lt;p&gt;You can &lt;a href=&quot;https://github.com/mahcloud/SimpleCanvasGame/tree/add-hero&quot;&gt;download&lt;/a&gt; this example.&lt;/p&gt;
 
 </description>
-				<pubDate>Tue, 18 Mar 2014 05:45:00 -0500</pubDate>
+				<pubDate>Tue, 18 Mar 2014 04:45:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-pokemon/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-pokemon/</guid>
 			</item>
@@ -578,7 +689,7 @@ slayMonster should be catchPokemon.&lt;/p&gt;
 				<description>&lt;p&gt;Monsters should spawn randomly at gate opening in arena.
 First, add the gates array.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;gates&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;gates&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
 		&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
 		&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
 		&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;canvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
@@ -587,7 +698,7 @@ First, add the gates array.&lt;/p&gt;
 
 &lt;p&gt;Then we want to spawn a monster randomly.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 	&lt;span class=&quot;nx&quot;&gt;gate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 	&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;gates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;gate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 	&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;gates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;gate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
@@ -595,20 +706,20 @@ First, add the gates array.&lt;/p&gt;
 
 &lt;p&gt;And change this in the slayMonster function&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;for&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Added bonus, we can have the monster start at a spawn point by adding.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;spawnMonster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And change the monster array values.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This means that the monster will be drawn off the screen before it is spawned.&lt;/p&gt;
@@ -616,69 +727,29 @@ First, add the gates array.&lt;/p&gt;
 &lt;p&gt;You can &lt;a href=&quot;https://github.com/mahcloud/SimpleCanvasGame/tree/monster-gates&quot;&gt;download&lt;/a&gt; this example.&lt;/p&gt;
 
 </description>
-				<pubDate>Tue, 18 Mar 2014 05:30:00 -0500</pubDate>
+				<pubDate>Tue, 18 Mar 2014 04:30:00 -0600</pubDate>
 				<link>http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-monster-gates/</link>
 				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-monster-gates/</guid>
 			</item>
 		
-			<item>
-				<title>Javascript Canvas Game Slay Monster</title>
-				<description>&lt;p&gt;Slaying monsters in our javascript arena.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;slayMonster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;isTouching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hero&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;monster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isTouching&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Slay monster function simply checks if the hero and monster are touching and then respawns the monster at location 100, 100.&lt;/p&gt;
-
-&lt;p&gt;The slayMonster function should be called in the main function.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;slayMonster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;It’s more fun if we had some stats on how many monsters we have slain.
-Add a variable to the hero array to keep track of how many monsters have been slain.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;hero&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;monstersSlain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Now in the slayMonsters if isTouching block add an incrementer.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hero&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;monstersSlain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;We need to show this on the screen.
-Add an HTML element to store the stat in.
-We’ll also need jQuery, a helpful javascript library.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;monsters_slain_header&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;nt&quot;&gt;&amp;lt;span&amp;gt;&lt;/span&gt;Monsters Slain: &lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;monsters_slain&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;To push the monsters slain count to the html element, add this to your render function.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;#monsters_slain&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hero&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;monstersSlain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Let’s add some styling to our stat bar.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;css&quot;&gt;&lt;span class=&quot;nf&quot;&gt;#monsters_slain_header&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;font-weight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;bold&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;font-size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;18px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10px&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;15px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You can &lt;a href=&quot;https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster&quot;&gt;download&lt;/a&gt; this example.&lt;/p&gt;
-
-</description>
-				<pubDate>Tue, 18 Mar 2014 05:00:00 -0500</pubDate>
-				<link>http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-slay-monster/</link>
-				<guid isPermaLink="true">http://www.mikehoffert.com/2014/03/18/javascript-canvas-game-slay-monster/</guid>
-			</item>
-		
 	</channel>
 </rss>
+
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>

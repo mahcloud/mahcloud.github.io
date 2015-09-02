@@ -1,0 +1,92 @@
+---
+layout: post
+title: "Ransack"
+date: 2015-09-02 08:37:00
+---
+
+#Dashboard: main project
+
+This week I had the unique task of building a fully interactive dashboard. A system that not only displays a large amount of analytics from all over the site, but does it in a way that admins can drill into the information and get immediate data updates.
+
+The first problem is handling all the different types of data on different pages without redundant code. I handled this using [Rails partial views][partials] under the dashboard namespace. So, if I wanted a table of user data I would get the app/views/dashboard/users/\_table.html.haml parital. I chose to use [rails remote][remoteforms] forms to handle the AJAX loading.
+
+##Ransack
+
+At this point I had a dashboard that I could click into and see that data on another page. The code was clean because it was being reused. The big problem was that based on feedback we needed pages that could be drilled into on the same page too. So, an admin could click on a user and all other dashboard data on that page would reflect objects relating to just that user and so forth for the rest of the dashboard objects. This was a big issue in my mind because it could potentially be a limitless amount of parameters passed back and forth between a huge amount of partials. I found a Ruby Gem that was perfect for this kind of filtering called [Ransack][ransack]. There was a great [railscast][ransackrailscast] episode on ransack, but I found it lacking a lot of answers for my specific problem.
+
+I'd like to delve into these issues. The first was that my dashboard was working off a legacy MySQL database built under a PHP framework. Ransack works based on single attributes on an object. The users controller action essentially is this simple.
+
+{% highlight ruby %}
+@search = User.ransack(params[:q])
+@users = @search.result(distinct: true)
+{% endhighlight %}
+
+The ransack call takes the q parameter that stores all the ransack filters. The next obvious question is how does the user interface interact with this. I used three different ways of interacting. I had buttons that would work as toggles to turn on certain filters and turn off other filters. I also had form fields for 'LIKE' searches. Last, I had table columns sortable.
+
+###Toggle links
+
+The toggle links were probably the easiest step. The only real challenge was clearing out the other filters from ransack. I didn't see anything in their documentation about clearing out other filters, so I accomplished it by simply overwriting the q param in the link.
+
+{% highlight ruby %}
+= link\_to 'Toggle Link', dashboard\_users\_path(q: user\_query\_params(false, false, false)), remote: true
+{% endhighlight %}
+
+The helper method I'm referencing would look something like this.
+
+{% highlight ruby %}
+def user\_query\_params(param1, param2, param3)
+  ((params[:q].nil?)? {} : params[:q]).merge({filter1: param1, filter2: param2, filter3: param3})
+end
+{% endhighlight %}
+
+###Custom form searches
+
+Ransack has a custom search\_form\_for method that takes a search object. The [:dashboard, search] references the namespaced @search variable from the users controller. I'm using a custom search here because I'd like to use my own model scope.
+
+{% highlight ruby %}
+= search\_form\_for [:dashboard, search], remote: true do |f|
+  = f.search\_field :filter\_by\_name
+{% endhighlight %}
+
+The scope on the model would look something like this.
+
+{% highlight ruby %}
+scope :filter\_by\_name, -> (name) { where("CONCAT(firstName, ' ', lastName) LIKE ?", "%#{name}%") }
+
+def self.ransackable\_scopes(auth\_object = nil)
+  %i(filter\_by\_name)
+end
+{% endhighlight %}
+
+ransackable\_scopes defines all scopes that the user could access through ransack. This can be refined by the user roles, but I didn't need this functionality. Normally custom form searches would reference something like f.search\_field :name\_cont that would search for users that contain the input text in the name attribute. Ransack has other search terms for equals, less than, etc.
+
+###Column sorts
+
+Column sorts are very eligant in ransack. 
+
+{% highlight ruby %}
+%th= sort\_link [:dashboard, search], :name, 'Name', { default\_order: :desc }, { remote: true, method: :get }
+{% endhighlight %}
+
+This header has a sort\_link on the column name. The first issue here is that Name in the system is actually a function that returns a concatinated field not an attribute. Well, it turns out that ransack has a thing called ransackers that define custom algorithms for this specific situation.
+
+{% highlight ruby %}
+ransacker :name do |parent|
+  Arel.sql('CONCAT(users.firstName, " ", users.lastName)')
+end
+{% endhighlight %}
+
+Setting a default sort order on the users controller would look something like this.
+
+{% highlight ruby %}
+@search = User.ransack(params[:q])
+@search.sorts = ["name asc"] if @search.sorts.empty?
+@users = @search.result(distinct: true)
+{% endhighlight %}
+
+I'm setting the defualt sort to name ascending unless another one is set.
+
+[partials]: http://railscasts.com/episodes/99-complex-partials
+[remoteforms]: http://railscasts.com/episodes/136-jquery-ajax-revised
+[ransack]: https://github.com/activerecord-hackery/ransack
+[ransackrailscast]: http://railscasts.com/episodes/370-ransack

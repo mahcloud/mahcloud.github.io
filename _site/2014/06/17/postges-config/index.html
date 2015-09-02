@@ -41,9 +41,9 @@
 	
 	<div class="post-content"><p>I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following</p>
 
-<div class="highlight"><pre><code class="bash">rake aborted!
-DEBUG <span class="o">[]</span> 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
-DEBUG <span class="o">[]</span> 	FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">rake aborted!
+DEBUG <span class="o">[]</span> 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+DEBUG <span class="o">[]</span> 	FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>initialize<span class="s1">&#39;</span>
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in `new&#39;</span>
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>connect<span class="s1">&#39;</span>
@@ -64,19 +64,19 @@ DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gem
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in `new&#39;</span>
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in <span class="sb">`</span>up<span class="s1">&#39;</span>
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:742:in `migrate&#39;</span>
-DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in <span class="sb">`</span>block <span class="o">(</span>2 levels<span class="o">)</span> in &lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in <span class="sb">`</span>block <span class="o">(</span><span class="m">2</span> levels<span class="o">)</span> in &lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
 DEBUG <span class="o">[]</span> 	Tasks: <span class="nv">TOP</span> <span class="o">=</span>&gt; db:migrate
 DEBUG <span class="o">[]</span> 	<span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
 cap aborted!
 SSHKit::Command::Failed: rake <span class="nb">exit </span>status: 1
 rake stdout: Nothing written
 rake stderr: rake aborted!
-PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
-FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off</code></pre></div>
+PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off</code></pre></div>
 
 <p>The pg_hba.conf file is generated when pg is is installed. The only problem is that I don’t want postgres installed on that server. I want the application to communicate with another server that hosts the postgres database so that I can have multiple application servers accessing the same database. So, since I’m not installing postgres, the config file is not being created. I could run <code>gem install pg --without-pg_config</code>, but then I wouldn’t be able to run capistrano. The <a href="http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html">pg_hba</a> file is described as a configuration file for client authentication. At first I thought this file needed to be created on the application side, but the application side actually is looking for this file on the postgres server. So, this file needs to be on the postgres server at /etc/postgresql/VERSION/main/pg_hba.conf</p>
 
-<div class="highlight"><pre><code class="ruby"><span class="c1"># PostgreSQL Client Authentication Configuration File</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># PostgreSQL Client Authentication Configuration File</span>
 <span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1"># Refer to the &quot;Client Authentication&quot; section in the PostgreSQL</span>
@@ -186,7 +186,7 @@ FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&q
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Ransack</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2015/09/02/ransack/">Ransack</a></h1>
+	
+	<div class="post-content"><h1 id="dashboard-main-project">Dashboard: main project</h1>
+
+<p>This week I had the unique task of building a fully interactive dashboard. A system that not only displays a large amount of analytics from all over the site, but does it in a way that admins can drill into the information and get immediate data updates.</p>
+
+<p>The first problem is handling all the different types of data on different pages without redundant code. I handled this using <a href="http://railscasts.com/episodes/99-complex-partials">Rails partial views</a> under the dashboard namespace. So, if I wanted a table of user data I would get the app/views/dashboard/users/_table.html.haml parital. I chose to use <a href="http://railscasts.com/episodes/136-jquery-ajax-revised">rails remote</a> forms to handle the AJAX loading.</p>
+
+<h2 id="ransack">Ransack</h2>
+
+<p>At this point I had a dashboard that I could click into and see that data on another page. The code was clean because it was being reused. The big problem was that based on feedback we needed pages that could be drilled into on the same page too. So, an admin could click on a user and all other dashboard data on that page would reflect objects relating to just that user and so forth for the rest of the dashboard objects. This was a big issue in my mind because it could potentially be a limitless amount of parameters passed back and forth between a huge amount of partials. I found a Ruby Gem that was perfect for this kind of filtering called <a href="https://github.com/activerecord-hackery/ransack">Ransack</a>. There was a great <a href="http://railscasts.com/episodes/370-ransack">railscast</a> episode on ransack, but I found it lacking a lot of answers for my specific problem.</p>
+
+<p>I’d like to delve into these issues. The first was that my dashboard was working off a legacy MySQL database built under a PHP framework. Ransack works based on single attributes on an object. The users controller action essentially is this simple.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@search</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+<span class="vi">@users</span> <span class="o">=</span> <span class="vi">@search</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="ss">distinct</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span></code></pre></div>
+
+<p>The ransack call takes the q parameter that stores all the ransack filters. The next obvious question is how does the user interface interact with this. I used three different ways of interacting. I had buttons that would work as toggles to turn on certain filters and turn off other filters. I also had form fields for ‘LIKE’ searches. Last, I had table columns sortable.</p>
+
+<h3 id="toggle-links">Toggle links</h3>
+
+<p>The toggle links were probably the easiest step. The only real challenge was clearing out the other filters from ransack. I didn’t see anything in their documentation about clearing out other filters, so I accomplished it by simply overwriting the q param in the link.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">=</span> <span class="n">link</span><span class="p">\</span><span class="n">_to</span> <span class="s1">&#39;Toggle Link&#39;</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">\</span><span class="n">_users</span><span class="p">\</span><span class="n">_path</span><span class="p">(</span><span class="ss">q</span><span class="p">:</span> <span class="n">user</span><span class="p">\</span><span class="n">_query</span><span class="p">\</span><span class="n">_params</span><span class="p">(</span><span class="kp">false</span><span class="p">,</span> <span class="kp">false</span><span class="p">,</span> <span class="kp">false</span><span class="p">)),</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span></code></pre></div>
+
+<p>The helper method I’m referencing would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">user</span><span class="p">\</span><span class="n">_query</span><span class="p">\</span><span class="n">_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">param3</span><span class="p">)</span>
+  <span class="p">((</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">].</span><span class="n">nil?</span><span class="p">)?</span> <span class="p">{}</span> <span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">({</span><span class="ss">filter1</span><span class="p">:</span> <span class="n">param1</span><span class="p">,</span> <span class="ss">filter2</span><span class="p">:</span> <span class="n">param2</span><span class="p">,</span> <span class="ss">filter3</span><span class="p">:</span> <span class="n">param3</span><span class="p">})</span>
+<span class="k">end</span></code></pre></div>
+
+<h3 id="custom-form-searches">Custom form searches</h3>
+
+<p>Ransack has a custom search_form_for method that takes a search object. The [:dashboard, search] references the namespaced @search variable from the users controller. I’m using a custom search here because I’d like to use my own model scope.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">=</span> <span class="n">search</span><span class="p">\</span><span class="n">_form</span><span class="p">\</span><span class="n">_for</span> <span class="o">[</span><span class="ss">:dashboard</span><span class="p">,</span> <span class="n">search</span><span class="o">]</span><span class="p">,</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">\</span><span class="n">_field</span> <span class="ss">:filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span></code></pre></div>
+
+<p>The scope on the model would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">scope</span> <span class="ss">:filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">name</span><span class="p">)</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="s2">&quot;CONCAT(firstName, &#39; &#39;, lastName) LIKE ?&quot;</span><span class="p">,</span> <span class="s2">&quot;%</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">ransackable</span><span class="p">\</span><span class="n">_scopes</span><span class="p">(</span><span class="n">auth</span><span class="p">\</span><span class="n">_object</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="o">%</span><span class="n">i</span><span class="p">(</span><span class="n">filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+
+<p>ransackable_scopes defines all scopes that the user could access through ransack. This can be refined by the user roles, but I didn’t need this functionality. Normally custom form searches would reference something like f.search_field :name_cont that would search for users that contain the input text in the name attribute. Ransack has other search terms for equals, less than, etc.</p>
+
+<h3 id="column-sorts">Column sorts</h3>
+
+<p>Column sorts are very eligant in ransack.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">%</span><span class="n">th</span><span class="o">=</span> <span class="n">sort</span><span class="p">\</span><span class="n">_link</span> <span class="o">[</span><span class="ss">:dashboard</span><span class="p">,</span> <span class="n">search</span><span class="o">]</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">default</span><span class="p">\</span><span class="ss">_order</span><span class="p">:</span> <span class="ss">:desc</span> <span class="p">},</span> <span class="p">{</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span> <span class="p">}</span></code></pre></div>
+
+<p>This header has a sort_link on the column name. The first issue here is that Name in the system is actually a function that returns a concatinated field not an attribute. Well, it turns out that ransack has a thing called ransackers that define custom algorithms for this specific situation.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">ransacker</span> <span class="ss">:name</span> <span class="k">do</span> <span class="o">|</span><span class="n">parent</span><span class="o">|</span>
+  <span class="no">Arel</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s1">&#39;CONCAT(users.firstName, &quot; &quot;, users.lastName)&#39;</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Setting a default sort order on the users controller would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@search</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+<span class="vi">@search</span><span class="o">.</span><span class="n">sorts</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;name asc&quot;</span><span class="o">]</span> <span class="k">if</span> <span class="vi">@search</span><span class="o">.</span><span class="n">sorts</span><span class="o">.</span><span class="n">empty?</span>
+<span class="vi">@users</span> <span class="o">=</span> <span class="vi">@search</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="ss">distinct</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span></code></pre></div>
+
+<p>I’m setting the defualt sort to name ascending unless another one is set.</p>
+
+</div>
+	<p class="meta">Posted on <span class="postdate">Sep 02, 2015</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>

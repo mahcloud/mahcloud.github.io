@@ -38,19 +38,92 @@
 				
 	<article class="post">
 		
+			<h1><a href="/2015/09/02/ransack/">Ransack</a></h1>
+		
+		<div class="post-content"><h1 id="dashboard-main-project">Dashboard: main project</h1>
+
+<p>This week I had the unique task of building a fully interactive dashboard. A system that not only displays a large amount of analytics from all over the site, but does it in a way that admins can drill into the information and get immediate data updates.</p>
+
+<p>The first problem is handling all the different types of data on different pages without redundant code. I handled this using <a href="http://railscasts.com/episodes/99-complex-partials">Rails partial views</a> under the dashboard namespace. So, if I wanted a table of user data I would get the app/views/dashboard/users/_table.html.haml parital. I chose to use <a href="http://railscasts.com/episodes/136-jquery-ajax-revised">rails remote</a> forms to handle the AJAX loading.</p>
+
+<h2 id="ransack">Ransack</h2>
+
+<p>At this point I had a dashboard that I could click into and see that data on another page. The code was clean because it was being reused. The big problem was that based on feedback we needed pages that could be drilled into on the same page too. So, an admin could click on a user and all other dashboard data on that page would reflect objects relating to just that user and so forth for the rest of the dashboard objects. This was a big issue in my mind because it could potentially be a limitless amount of parameters passed back and forth between a huge amount of partials. I found a Ruby Gem that was perfect for this kind of filtering called <a href="https://github.com/activerecord-hackery/ransack">Ransack</a>. There was a great <a href="http://railscasts.com/episodes/370-ransack">railscast</a> episode on ransack, but I found it lacking a lot of answers for my specific problem.</p>
+
+<p>I’d like to delve into these issues. The first was that my dashboard was working off a legacy MySQL database built under a PHP framework. Ransack works based on single attributes on an object. The users controller action essentially is this simple.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@search</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+<span class="vi">@users</span> <span class="o">=</span> <span class="vi">@search</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="ss">distinct</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span></code></pre></div>
+
+<p>The ransack call takes the q parameter that stores all the ransack filters. The next obvious question is how does the user interface interact with this. I used three different ways of interacting. I had buttons that would work as toggles to turn on certain filters and turn off other filters. I also had form fields for ‘LIKE’ searches. Last, I had table columns sortable.</p>
+
+<h3 id="toggle-links">Toggle links</h3>
+
+<p>The toggle links were probably the easiest step. The only real challenge was clearing out the other filters from ransack. I didn’t see anything in their documentation about clearing out other filters, so I accomplished it by simply overwriting the q param in the link.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">=</span> <span class="n">link</span><span class="p">\</span><span class="n">_to</span> <span class="s1">&#39;Toggle Link&#39;</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">\</span><span class="n">_users</span><span class="p">\</span><span class="n">_path</span><span class="p">(</span><span class="ss">q</span><span class="p">:</span> <span class="n">user</span><span class="p">\</span><span class="n">_query</span><span class="p">\</span><span class="n">_params</span><span class="p">(</span><span class="kp">false</span><span class="p">,</span> <span class="kp">false</span><span class="p">,</span> <span class="kp">false</span><span class="p">)),</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span></code></pre></div>
+
+<p>The helper method I’m referencing would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">user</span><span class="p">\</span><span class="n">_query</span><span class="p">\</span><span class="n">_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">param3</span><span class="p">)</span>
+  <span class="p">((</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">].</span><span class="n">nil?</span><span class="p">)?</span> <span class="p">{}</span> <span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">({</span><span class="ss">filter1</span><span class="p">:</span> <span class="n">param1</span><span class="p">,</span> <span class="ss">filter2</span><span class="p">:</span> <span class="n">param2</span><span class="p">,</span> <span class="ss">filter3</span><span class="p">:</span> <span class="n">param3</span><span class="p">})</span>
+<span class="k">end</span></code></pre></div>
+
+<h3 id="custom-form-searches">Custom form searches</h3>
+
+<p>Ransack has a custom search_form_for method that takes a search object. The [:dashboard, search] references the namespaced @search variable from the users controller. I’m using a custom search here because I’d like to use my own model scope.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">=</span> <span class="n">search</span><span class="p">\</span><span class="n">_form</span><span class="p">\</span><span class="n">_for</span> <span class="o">[</span><span class="ss">:dashboard</span><span class="p">,</span> <span class="n">search</span><span class="o">]</span><span class="p">,</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">\</span><span class="n">_field</span> <span class="ss">:filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span></code></pre></div>
+
+<p>The scope on the model would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">scope</span> <span class="ss">:filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">name</span><span class="p">)</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="s2">&quot;CONCAT(firstName, &#39; &#39;, lastName) LIKE ?&quot;</span><span class="p">,</span> <span class="s2">&quot;%</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">ransackable</span><span class="p">\</span><span class="n">_scopes</span><span class="p">(</span><span class="n">auth</span><span class="p">\</span><span class="n">_object</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="o">%</span><span class="n">i</span><span class="p">(</span><span class="n">filter</span><span class="p">\</span><span class="n">_by</span><span class="p">\</span><span class="n">_name</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+
+<p>ransackable_scopes defines all scopes that the user could access through ransack. This can be refined by the user roles, but I didn’t need this functionality. Normally custom form searches would reference something like f.search_field :name_cont that would search for users that contain the input text in the name attribute. Ransack has other search terms for equals, less than, etc.</p>
+
+<h3 id="column-sorts">Column sorts</h3>
+
+<p>Column sorts are very eligant in ransack.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">%</span><span class="n">th</span><span class="o">=</span> <span class="n">sort</span><span class="p">\</span><span class="n">_link</span> <span class="o">[</span><span class="ss">:dashboard</span><span class="p">,</span> <span class="n">search</span><span class="o">]</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">default</span><span class="p">\</span><span class="ss">_order</span><span class="p">:</span> <span class="ss">:desc</span> <span class="p">},</span> <span class="p">{</span> <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span> <span class="p">}</span></code></pre></div>
+
+<p>This header has a sort_link on the column name. The first issue here is that Name in the system is actually a function that returns a concatinated field not an attribute. Well, it turns out that ransack has a thing called ransackers that define custom algorithms for this specific situation.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">ransacker</span> <span class="ss">:name</span> <span class="k">do</span> <span class="o">|</span><span class="n">parent</span><span class="o">|</span>
+  <span class="no">Arel</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s1">&#39;CONCAT(users.firstName, &quot; &quot;, users.lastName)&#39;</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Setting a default sort order on the users controller would look something like this.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@search</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+<span class="vi">@search</span><span class="o">.</span><span class="n">sorts</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;name asc&quot;</span><span class="o">]</span> <span class="k">if</span> <span class="vi">@search</span><span class="o">.</span><span class="n">sorts</span><span class="o">.</span><span class="n">empty?</span>
+<span class="vi">@users</span> <span class="o">=</span> <span class="vi">@search</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="ss">distinct</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span></code></pre></div>
+
+<p>I’m setting the defualt sort to name ascending unless another one is set.</p>
+
+</div>
+	</article>
+
+	<article class="post">
+		
 			<h1><a href="/2014/06/26/postgres-load-balance/">Chef - Installing Postgres - Load Balanced Servers</a></h1>
 		
 		<div class="post-content"><p>I want to talk about provisioning a postgres server for a load balanced production rails application. This is probably a topic that everyone will come across. You want a live rails application and it starts becoming a bigger deal, you need to spin up more servers and have them load balanced. Well, in that case, you need one server that has the database and all the other application servers to talk to it. No big deal, right. Well, I’m using chef to provision my servers and I got stuck on a very simple thing. Okay, I provisioned my servers, but how do I get the password for my provisioned server so my application can talk to my database. Seems simple enough, but where is that password.</p>
 
 <p>The postgres password is stored in the node config file. To access this using chef knife:</p>
 
-<div class="highlight"><pre><code class="bash">knife edit node SERVER-NAME</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">knife edit node SERVER-NAME</code></pre></div>
 
 <p>So simple, but I just didn’t know where it was. I thought I would make note, so no more time is wasted.</p>
 
 <p>A couple other notes about connecting to a postgres server. After chef provisioning, when I ran cap deployment, I was running into this error:</p>
 
-<div class="highlight"><pre><code class="bash">rake aborted!
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">rake aborted!
 DEBUG <span class="o">[]</span> 	PG::ConnectionBad: could not connect to server: Connection refused
 DEBUG <span class="o">[]</span> 		Is the server running on host <span class="s2">&quot;IP_ADDRESS&quot;</span> and accepting
 DEBUG <span class="o">[]</span> 		TCP/IP connections on port 5432?</code></pre></div>
@@ -61,7 +134,7 @@ I then found <a href="http://stackoverflow.com/questions/17648677/is-the-server-
 
 <p>Naturally, my next thoughts are <code>awesome! this works but can I automate this for next time?</code>. So I go to the documentation and of course it’s right <a href="https://github.com/hw-cookbooks/postgresql">there</a> in front of me. Adding these 2 lines does the exact same thing as I described above which means I am now fully automated.</p>
 
-<div class="highlight"><pre><code class="bash">node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;config&#39;</span><span class="o">][</span><span class="s1">&#39;listen_addresses&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;config&#39;</span><span class="o">][</span><span class="s1">&#39;listen_addresses&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
 node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;pg_hba&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[{</span>:type <span class="o">=</span>&gt; <span class="s1">&#39;host&#39;</span>, :db <span class="o">=</span>&gt; <span class="s1">&#39;all&#39;</span>, :user <span class="o">=</span>&gt; <span class="s1">&#39;postgres&#39;</span>, :addr <span class="o">=</span>&gt; <span class="s1">&#39;IPADDRESS/32&#39;</span>, :method <span class="o">=</span>&gt; <span class="s1">&#39;md5&#39;</span><span class="o">}]</span></code></pre></div>
 
 </div>
@@ -75,7 +148,7 @@ node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span>
 I’m now using Vagrant 1.5.4 and VirtualBox 4.3.6
 I’m just working through all the little bug nuances. Here’s one of them I thought I would mention.</p>
 
-<div class="highlight"><pre><code class="bash"><span class="o">[</span>2014-06-19T13:34:28-05:00<span class="o">]</span> WARN: Failed to properly build pg gem. Forcing properly linking and retrying <span class="o">(</span>omnibus fix<span class="o">)</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>2014-06-19T13:34:28-05:00<span class="o">]</span> WARN: Failed to properly build pg gem. Forcing properly linking and retrying <span class="o">(</span>omnibus fix<span class="o">)</span>
   * execute<span class="o">[</span>generate pg gem Makefile<span class="o">]</span> action run
     - execute /opt/chef/embedded/bin/ruby extconf.rb
 
@@ -116,7 +189,7 @@ Compiled Resource:
 <span class="c"># Declared in /var/chef/cache/cookbooks/postgresql/recipes/ruby.rb:107:in `rescue in rescue in from_file&#39;</span>
 
 execute<span class="o">(</span><span class="s2">&quot;make pg gem lib&quot;</span><span class="o">)</span> <span class="k">do</span>
-<span class="k">  </span>action <span class="o">[</span>:nothing<span class="o">]</span>
+  action <span class="o">[</span>:nothing<span class="o">]</span>
   retries 0
   retry_delay 2
   <span class="nb">command</span> <span class="s2">&quot;make&quot;</span>
@@ -175,12 +248,12 @@ Relevant File Content:
 <span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> ERROR: Running exception handlers
 <span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> ERROR: Exception handlers <span class="nb">complete</span>
 <span class="o">[</span>2014-06-19T13:34:35-05:00<span class="o">]</span> FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
-Chef Client failed. 2 resources updated
+Chef Client failed. <span class="m">2</span> resources updated
 <span class="o">[</span>2014-06-19T13:34:36-05:00<span class="o">]</span> FATAL: Chef::Exceptions::ChildConvergeError: Chef run process exited unsuccessfully <span class="o">(</span><span class="nb">exit </span>code 1<span class="o">)</span></code></pre></div>
 
 <p>First thing I found was that the make library is part of build-essentials. So if I include that with</p>
 
-<div class="highlight"><pre><code class="bash">include_recipe <span class="s2">&quot;build-essential&quot;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">include_recipe <span class="s2">&quot;build-essential&quot;</span></code></pre></div>
 
 </div>
 	</article>
@@ -191,9 +264,9 @@ Chef Client failed. 2 resources updated
 		
 		<div class="post-content"><p>I’m trying to run capistrano to deploy a code base. When I run capistrano, it fails to install gem pg because of the following</p>
 
-<div class="highlight"><pre><code class="bash">rake aborted!
-DEBUG <span class="o">[]</span> 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
-DEBUG <span class="o">[]</span> 	FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">rake aborted!
+DEBUG <span class="o">[]</span> 	PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+DEBUG <span class="o">[]</span> 	FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>initialize<span class="s1">&#39;</span>
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in `new&#39;</span>
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/connection_adapters/postgresql_adapter.rb:831:in <span class="sb">`</span>connect<span class="s1">&#39;</span>
@@ -214,19 +287,19 @@ DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gem
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in `new&#39;</span>
 DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:764:in <span class="sb">`</span>up<span class="s1">&#39;</span>
 <span class="s1">DEBUG [] 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/migration.rb:742:in `migrate&#39;</span>
-DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in <span class="sb">`</span>block <span class="o">(</span>2 levels<span class="o">)</span> in &lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
+DEBUG <span class="o">[]</span> 	/home/deploy/slice/shared/bundle/ruby/2.1.0/gems/activerecord-4.0.3/lib/active_record/railties/databases.rake:42:in <span class="sb">`</span>block <span class="o">(</span><span class="m">2</span> levels<span class="o">)</span> in &lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>
 DEBUG <span class="o">[]</span> 	Tasks: <span class="nv">TOP</span> <span class="o">=</span>&gt; db:migrate
 DEBUG <span class="o">[]</span> 	<span class="o">(</span>See full trace by running task with --trace<span class="o">)</span>
 cap aborted!
 SSHKit::Command::Failed: rake <span class="nb">exit </span>status: 1
 rake stdout: Nothing written
 rake stderr: rake aborted!
-PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
-FATAL:  no pg_hba.conf entry <span class="k">for </span>host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off</code></pre></div>
+PG::ConnectionBad: FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL on
+FATAL:  no pg_hba.conf entry <span class="k">for</span> host <span class="s2">&quot;0.0.0.0&quot;</span>, user <span class="s2">&quot;postgres&quot;</span>, database <span class="s2">&quot;slice&quot;</span>, SSL off</code></pre></div>
 
 <p>The pg_hba.conf file is generated when pg is is installed. The only problem is that I don’t want postgres installed on that server. I want the application to communicate with another server that hosts the postgres database so that I can have multiple application servers accessing the same database. So, since I’m not installing postgres, the config file is not being created. I could run <code>gem install pg --without-pg_config</code>, but then I wouldn’t be able to run capistrano. The <a href="http://www.postgresql.org/docs/8.3/static/auth-pg-hba-conf.html">pg_hba</a> file is described as a configuration file for client authentication. At first I thought this file needed to be created on the application side, but the application side actually is looking for this file on the postgres server. So, this file needs to be on the postgres server at /etc/postgresql/VERSION/main/pg_hba.conf</p>
 
-<div class="highlight"><pre><code class="ruby"><span class="c1"># PostgreSQL Client Authentication Configuration File</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># PostgreSQL Client Authentication Configuration File</span>
 <span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1"># Refer to the &quot;Client Authentication&quot; section in the PostgreSQL</span>
@@ -342,18 +415,18 @@ It’s good for my memory though.</p>
 <p>Problem #1
 I’m running</p>
 
-<div class="highlight"><pre><code class="bash">bundle install</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">bundle install</code></pre></div>
 
 <p>on ruby version 1.9.2 for a chef repository. It seems to have a problem installing the nokogiri gem. <a href="https://github.com/sparklemotion/nokogiri">Nokogiri</a> is a HTML, XML, SAX, and Reader parser.</p>
 
-<div class="highlight"><pre><code class="bash">bundle install
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">bundle install
 Fetching gem metadata from https://rubygems.org/.......
 Fetching additional metadata from https://rubygems.org/..
 Using rake 10.3.1
 Using builder 3.2.2
 Using gyoku 1.1.1
 Using mini_portile 0.5.3
-sh: -c: line 0: unexpected EOF <span class="k">while </span>looking <span class="k">for </span>matching <span class="sb">`</span><span class="s2">&quot;&#39;</span>
+sh: -c: line 0: unexpected EOF <span class="k">while</span> looking <span class="k">for</span> matching <span class="sb">`</span><span class="s2">&quot;&#39;</span>
 <span class="s2">sh: -c: line 1: syntax error: unexpected end of file</span>
 
 <span class="s2">Gem::Ext::BuildError: ERROR: Failed to build gem native extension.</span>
@@ -362,14 +435,14 @@ sh: -c: line 0: unexpected EOF <span class="k">while </span>looking <span class=
 
 extconf failed, <span class="nb">exit </span>code 2
 
-Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 <span class="k">for </span>inspection.
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 <span class="k">for</span> inspection.
 Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out
-An error occurred <span class="k">while </span>installing nokogiri <span class="o">(</span>1.6.2<span class="o">)</span>, and Bundler cannot <span class="k">continue</span>.
+An error occurred <span class="k">while</span> installing nokogiri <span class="o">(</span>1.6.2<span class="o">)</span>, and Bundler cannot <span class="k">continue</span>.
 Make sure that <span class="sb">`</span>gem install nokogiri -v <span class="s1">&#39;1.6.2&#39;</span><span class="sb">`</span> succeeds before bundling.</code></pre></div>
 
 <p>I take the advice and run <code>gem install nokogiri -v '1.6.2'</code> which fails because it can’t find the libiconv native library.</p>
 
-<div class="highlight"><pre><code class="bash">gem install nokogiri -v <span class="s1">&#39;1.6.2&#39;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">gem install nokogiri -v <span class="s1">&#39;1.6.2&#39;</span>
 Building native extensions.  This could take a <span class="k">while</span>...
 Building nokogiri using packaged libraries.
 ERROR:  Error installing nokogiri:
@@ -378,11 +451,11 @@ ERROR:  Error installing nokogiri:
     /Users/mahcloud/.rvm/rubies/ruby-1.9.2-p320/bin/ruby extconf.rb
 Building nokogiri using packaged libraries.
 -----
-libiconv is missing.  please visit http://nokogiri.org/tutorials/installing_nokogiri.html <span class="k">for </span><span class="nb">help </span>with installing dependencies.
+libiconv is missing.  please visit http://nokogiri.org/tutorials/installing_nokogiri.html <span class="k">for</span> <span class="nb">help </span>with installing dependencies.
 -----
 *** extconf.rb failed ***
 Could not create Makefile due to some reason, probably lack of
-necessary libraries and/or headers.  Check the mkmf.log file <span class="k">for </span>more
+necessary libraries and/or headers.  Check the mkmf.log file <span class="k">for</span> more
 details.  You may need configuration options.
 
 Provided configuration options:
@@ -412,20 +485,20 @@ Provided configuration options:
 
 extconf failed, <span class="nb">exit </span>code 1
 
-Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 <span class="k">for </span>inspection.
+Gem files will remain installed in /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/gems/nokogiri-1.6.2 <span class="k">for</span> inspection.
 Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/x86_64-darwin-13/1.9.1/nokogiri-1.6.2/gem_make.out</code></pre></div>
 
 <p><a href="https://www.gnu.org/software/libiconv/">libiconv</a> is a library that converts string encodings from or to unicode. libiconv comes standard on my mac, but for some reason nokogiri thinks it is missing.</p>
 
 <p>So we need install libiconv again and tell nokogiri where libiconv is. Some options for installing libiconv are macports and brew. I installed with brew. And then ran.</p>
 
-<div class="highlight"><pre><code class="bash">gem install nokogiri -- --with-iconv-dir<span class="o">=</span>/usr/local/Cellar/libiconv/1.14/</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">gem install nokogiri -- --with-iconv-dir<span class="o">=</span>/usr/local/Cellar/libiconv/1.14/</code></pre></div>
 
 <p>This installed successfully. This fixed the problem in my development environment for my site, but for the chef repository, it still doesn’t recognize that nokogiri is installed.</p>
 
 <p>Next, I ran</p>
 
-<div class="highlight"><pre><code class="bash">xcode-select --install</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">xcode-select --install</code></pre></div>
 
 <p>This installs the command-line developer tools for mac, which includes libiconv. Install nokogiri version as normal and that took care of the problem.</p>
 
@@ -455,11 +528,11 @@ Results logged to /Users/mahcloud/.rvm/gems/ruby-1.9.2-p320@1kb-chef/extensions/
 
 <p>Now that we have all the background story covered, I’ve got the RoR application deploying live and to a beta staging environment. When I deploy to these boxes, I need a zero downtime switch to the new code. Since the reporting server is constantly consuming data from rabbitMQ, it would be very bad if it missed any of these queued items. I’ll be using <a href="http://godrb.com/">god</a> to keep the rabbitMQ listener up and running even during a code deployment. So, the line I need to add to my capistrano deployment is:</p>
 
-<div class="highlight"><pre><code class="bash">sudo /var/god/.rvm/bin/god restart APP-NAME</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo /var/god/.rvm/bin/god restart APP-NAME</code></pre></div>
 
 <p>I’m having a little problem here.</p>
 
-<div class="highlight"><pre><code class="bash">Command: /usr/bin/env sudo
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Command: /usr/bin/env sudo
 DEBUG <span class="o">[]</span> 	usage: sudo -h <span class="p">|</span> -K <span class="p">|</span> -k <span class="p">|</span> -V
 DEBUG <span class="o">[]</span> 	usage: sudo -v <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
 DEBUG <span class="o">[]</span> 	usage: sudo -l <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-U user<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
@@ -512,7 +585,7 @@ I don’t want to give away anything that is in his book, so I’m just gonna sk
 <p>I deployed using capistrano.
 This will create the capistrano files:</p>
 
-<div class="highlight"><pre><code class="bash">cap install</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">cap install</code></pre></div>
 
 <p>To use capistrano you’ll need to be able to ssh authenticate with ssh key instead of password.
 <a href="http://gorails.com/deploy/ubuntu/12.04">Here</a> is a great tutorial on how to do that.</p>
@@ -521,9 +594,9 @@ This will create the capistrano files:</p>
 This part was a lot easier than I thought it was going to be.
 After adding the gem and installing it, I just made a unicorn config file and ran unicorn.</p>
 
-<div class="highlight"><pre><code class="bash">vim /etc/unicorn/mahcloud.rb</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">vim /etc/unicorn/mahcloud.rb</code></pre></div>
 
-<div class="highlight"><pre><code class="ruby"><span class="n">pid</span> <span class="s1">&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">pid</span> <span class="s1">&#39;/home/root/mahcloud/tmp/unicorn.pid&#39;</span>
 <span class="n">working_directory</span> <span class="s1">&#39;/home/root/mahcloud/&#39;</span></code></pre></div>
 
 <p>The config file has a little more to it than that.</p>
@@ -558,7 +631,7 @@ After adding the gem and installing it, I just made a unicorn config file and ra
 
 <p>These are the image dimensions for the pokemon.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
@@ -581,7 +654,7 @@ After adding the gem and installing it, I just made a unicorn config file and ra
 
 <p>Add this to your spawnMonster function.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 <span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/pokemon/&quot;</span><span class="o">+</span><span class="nx">pokemon</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span></code></pre></div>
@@ -602,7 +675,7 @@ slayMonster should be catchPokemon.</p>
 		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena.
 First, add the gates array.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">),</span>
@@ -611,7 +684,7 @@ First, add the gates array.</p>
 
 <p>Then we want to spawn a monster randomly.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="nx">gate</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
@@ -619,83 +692,25 @@ First, add the gates array.</p>
 
 <p>And change this in the slayMonster function</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>for</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>Added bonus, we can have the monster start at a spawn point by adding.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>And change the monster array values.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>This means that the monster will be drawn off the screen before it is spawned.</p>
 
 <p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster-gates">download</a> this example.</p>
-
-</div>
-	</article>
-
-	<article class="post">
-		
-			<h1><a href="/2014/03/18/javascript-canvas-game-slay-monster/">Javascript Canvas Game Slay Monster</a></h1>
-		
-		<div class="post-content"><p>Slaying monsters in our javascript arena.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">slayMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="nx">isTouching</span><span class="p">(</span><span class="nx">hero</span><span class="p">,</span> <span class="nx">monster</span><span class="p">))</span> <span class="p">{</span>
-		<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-		<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">};</span>
-
-<span class="kd">var</span> <span class="nx">isTouching</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-	<span class="k">if</span><span class="p">((</span><span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">width</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">height</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">b</span><span class="p">.</span><span class="nx">height</span><span class="p">)))</span> <span class="p">{</span>
-		<span class="nx">ret</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-<span class="p">};</span></code></pre></div>
-
-<p>Slay monster function simply checks if the hero and monster are touching and then respawns the monster at location 100, 100.</p>
-
-<p>The slayMonster function should be called in the main function.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">slayMonster</span><span class="p">();</span></code></pre></div>
-
-<p>It’s more fun if we had some stats on how many monsters we have slain.
-Add a variable to the hero array to keep track of how many monsters have been slain.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></div>
-
-<p>Now in the slayMonsters if isTouching block add an incrementer.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="o">++</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">;</span></code></pre></div>
-
-<p>We need to show this on the screen.
-Add an HTML element to store the stat in.
-We’ll also need jQuery, a helpful javascript library.</p>
-
-<div class="highlight"><pre><code class="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;monsters_slain_header&quot;</span><span class="nt">&gt;</span>
-	<span class="nt">&lt;span&gt;</span>Monsters Slain: <span class="nt">&lt;/span&gt;&lt;span</span> <span class="na">id=</span><span class="s">&quot;monsters_slain&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/span&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
-
-<p>To push the monsters slain count to the html element, add this to your render function.</p>
-
-<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#monsters_slain&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">);</span></code></pre></div>
-
-<p>Let’s add some styling to our stat bar.</p>
-
-<div class="highlight"><pre><code class="css"><span class="nf">#monsters_slain_header</span> <span class="p">{</span> <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span> <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span> <span class="k">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span> <span class="k">margin</span><span class="o">:</span> <span class="m">10px</span> <span class="m">15px</span><span class="p">;</span> <span class="p">}</span></code></pre></div>
-
-<p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p>
 
 </div>
 	</article>
@@ -719,7 +734,7 @@ We’ll also need jQuery, a helpful javascript library.</p>
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

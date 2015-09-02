@@ -46,7 +46,7 @@ You can name this file anything you want as long as it is saved as an html exten
 This is where your game lives.
 You can see it by opening your index page.</p>
 
-<div class="highlight"><pre><code class="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
 	<span class="nt">&lt;head&gt;</span>
 		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
@@ -71,7 +71,7 @@ So let’s create a folder in the same place as your index page and add a backgr
 First add a js folder and put a main.js file in it.
 Adding the following with create a canvas with dimensions 979pixels X 606pixels and add it to the index page.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;canvas&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;canvas&quot;</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">&quot;2d&quot;</span><span class="p">);</span>
 <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">979</span><span class="p">;</span>
 <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">606</span><span class="p">;</span>
@@ -79,7 +79,7 @@ Adding the following with create a canvas with dimensions 979pixels X 606pixels 
 
 <p>The following will create a background image and draw it on the canvas.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
 <span class="nx">bgImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">bgImage</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 <span class="p">};</span>
@@ -102,7 +102,7 @@ It takes time for javascript to load up the background image.</p>
 		<div class="post-content"><p>Let’s add a hero to our javascript arena.
 You’ll need a hero.png image</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
 <span class="nx">heroImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">heroImage</span><span class="p">,</span> <span class="mi">474</span><span class="p">,</span> <span class="mi">287</span><span class="p">);</span>
 <span class="p">};</span>
@@ -122,7 +122,7 @@ You’ll need a hero.png image</p>
 		<div class="post-content"><p>Let’s add a monster to our javascript arena.
 You’ll need a monster.png image.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">monsterImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
 <span class="nx">monsterImage</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 	<span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">monsterImage</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
 <span class="p">};</span>
@@ -135,7 +135,7 @@ We’ll make it so we can control the hero’s movement.
 First, we need to update the images so they load every time the hero and monster move.
 Change the image code to:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">bgImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
 <span class="nx">bgImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/canvas_background.png&quot;</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">heroImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
@@ -148,7 +148,7 @@ Change the image code to:</p>
 
 <p>We will then reload the images every few miliseconds with:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="p">{};</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="p">{};</span>
 <span class="nx">hero</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
 <span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
 <span class="nx">hero</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
@@ -175,7 +175,7 @@ Change the image code to:</p>
 
 <p>Now let’s make our monster move.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">moveMonster</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">moveMonster</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span><span class="p">;</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span><span class="p">;</span>
 	<span class="nx">resetObjectLocation</span><span class="p">(</span><span class="nx">monster</span><span class="p">);</span>
@@ -203,23 +203,23 @@ Change the image code to:</p>
 
 <p>And add the following to the main method.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">moveMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">moveMonster</span><span class="p">();</span></code></pre></div>
 
 <p>Add the following to the monster array.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">xDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">yDirection</span> <span class="o">=</span> <span class="nx">monster</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span></code></pre></div>
 
 <p>This goes at the bottom of your file to tell the monster to change direction every half second</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">setInterval</span><span class="p">(</span><span class="nx">updateMonsterDirection</span><span class="p">,</span> <span class="mi">500</span><span class="p">;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">setInterval</span><span class="p">(</span><span class="nx">updateMonsterDirection</span><span class="p">,</span> <span class="mi">500</span><span class="p">;</span></code></pre></div>
 
 <p>But what if we wanted to control the hero using the arrow keys?
 It would be the same logic just based on input from the keyboard.
 Here’s how we receive input from the keyboard.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">keysDown</span> <span class="o">=</span> <span class="p">{};</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">keysDown</span> <span class="o">=</span> <span class="p">{};</span>
 
 <span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;keydown&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">keysDown</span><span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
@@ -247,11 +247,11 @@ Here’s how we receive input from the keyboard.</p>
 
 <p>Don’t forget to add speed to your hero array.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">speed</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span></code></pre></div>
 
 <p>And add moveHero method call to your main method.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">moveHero</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">moveHero</span><span class="p">();</span></code></pre></div>
 
 <p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/monster">download</a> this example.</p>
 
@@ -264,7 +264,7 @@ Here’s how we receive input from the keyboard.</p>
 		
 		<div class="post-content"><p>Slaying monsters in our javascript arena.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">slayMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">slayMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="nx">isTouching</span><span class="p">(</span><span class="nx">hero</span><span class="p">,</span> <span class="nx">monster</span><span class="p">))</span> <span class="p">{</span>
 		<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 		<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
@@ -283,33 +283,33 @@ Here’s how we receive input from the keyboard.</p>
 
 <p>The slayMonster function should be called in the main function.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">slayMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">slayMonster</span><span class="p">();</span></code></pre></div>
 
 <p>It’s more fun if we had some stats on how many monsters we have slain.
 Add a variable to the hero array to keep track of how many monsters have been slain.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></div>
 
 <p>Now in the slayMonsters if isTouching block add an incrementer.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="o">++</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">++</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">;</span></code></pre></div>
 
 <p>We need to show this on the screen.
 Add an HTML element to store the stat in.
 We’ll also need jQuery, a helpful javascript library.</p>
 
-<div class="highlight"><pre><code class="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;monsters_slain_header&quot;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;monsters_slain_header&quot;</span><span class="nt">&gt;</span>
 	<span class="nt">&lt;span&gt;</span>Monsters Slain: <span class="nt">&lt;/span&gt;&lt;span</span> <span class="na">id=</span><span class="s">&quot;monsters_slain&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/span&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
 
 <p>To push the monsters slain count to the html element, add this to your render function.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#monsters_slain&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">);</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#monsters_slain&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">monstersSlain</span><span class="p">);</span></code></pre></div>
 
 <p>Let’s add some styling to our stat bar.</p>
 
-<div class="highlight"><pre><code class="css"><span class="nf">#monsters_slain_header</span> <span class="p">{</span> <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span> <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span> <span class="k">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span> <span class="k">margin</span><span class="o">:</span> <span class="m">10px</span> <span class="m">15px</span><span class="p">;</span> <span class="p">}</span></code></pre></div>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nf">#monsters_slain_header</span> <span class="p">{</span> <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span> <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span> <span class="k">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span> <span class="k">margin</span><span class="o">:</span> <span class="m">10px</span> <span class="m">15px</span><span class="p">;</span> <span class="p">}</span></code></pre></div>
 
 <p>You can <a href="https://github.com/mahcloud/SimpleCanvasGame/tree/slay-monster">download</a> this example.</p>
 
@@ -323,7 +323,7 @@ We’ll also need jQuery, a helpful javascript library.</p>
 		<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena.
 First, add the gates array.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">),</span>
@@ -332,7 +332,7 @@ First, add the gates array.</p>
 
 <p>Then we want to spawn a monster randomly.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="nx">gate</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
@@ -340,20 +340,20 @@ First, add the gates array.</p>
 
 <p>And change this in the slayMonster function</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>for</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>Added bonus, we can have the monster start at a spawn point by adding.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>And change the monster array values.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>This means that the monster will be drawn off the screen before it is spawned.</p>
@@ -390,7 +390,7 @@ First, add the gates array.</p>
 
 <p>These are the image dimensions for the pokemon.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
@@ -413,7 +413,7 @@ First, add the gates array.</p>
 
 <p>Add this to your spawnMonster function.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 <span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/pokemon/&quot;</span><span class="o">+</span><span class="nx">pokemon</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span></code></pre></div>
@@ -434,7 +434,7 @@ slayMonster should be catchPokemon.</p>
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

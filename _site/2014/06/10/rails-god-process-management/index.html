@@ -47,11 +47,11 @@
 
 <p>Now that we have all the background story covered, I’ve got the RoR application deploying live and to a beta staging environment. When I deploy to these boxes, I need a zero downtime switch to the new code. Since the reporting server is constantly consuming data from rabbitMQ, it would be very bad if it missed any of these queued items. I’ll be using <a href="http://godrb.com/">god</a> to keep the rabbitMQ listener up and running even during a code deployment. So, the line I need to add to my capistrano deployment is:</p>
 
-<div class="highlight"><pre><code class="bash">sudo /var/god/.rvm/bin/god restart APP-NAME</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo /var/god/.rvm/bin/god restart APP-NAME</code></pre></div>
 
 <p>I’m having a little problem here.</p>
 
-<div class="highlight"><pre><code class="bash">Command: /usr/bin/env sudo
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Command: /usr/bin/env sudo
 DEBUG <span class="o">[]</span> 	usage: sudo -h <span class="p">|</span> -K <span class="p">|</span> -k <span class="p">|</span> -V
 DEBUG <span class="o">[]</span> 	usage: sudo -v <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
 DEBUG <span class="o">[]</span> 	usage: sudo -l <span class="o">[</span>-g group<span class="o">]</span> <span class="o">[</span>-h host<span class="o">]</span> <span class="o">[</span>-p prompt<span class="o">]</span> <span class="o">[</span>-U user<span class="o">]</span> <span class="o">[</span>-u user<span class="o">]</span>
@@ -92,7 +92,7 @@ I found <a href="http://ubuntuforums.org/archive/index.php/t-833765.html">TTY an
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

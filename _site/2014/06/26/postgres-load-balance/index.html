@@ -43,13 +43,13 @@
 
 <p>The postgres password is stored in the node config file. To access this using chef knife:</p>
 
-<div class="highlight"><pre><code class="bash">knife edit node SERVER-NAME</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">knife edit node SERVER-NAME</code></pre></div>
 
 <p>So simple, but I just didn’t know where it was. I thought I would make note, so no more time is wasted.</p>
 
 <p>A couple other notes about connecting to a postgres server. After chef provisioning, when I ran cap deployment, I was running into this error:</p>
 
-<div class="highlight"><pre><code class="bash">rake aborted!
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">rake aborted!
 DEBUG <span class="o">[]</span> 	PG::ConnectionBad: could not connect to server: Connection refused
 DEBUG <span class="o">[]</span> 		Is the server running on host <span class="s2">&quot;IP_ADDRESS&quot;</span> and accepting
 DEBUG <span class="o">[]</span> 		TCP/IP connections on port 5432?</code></pre></div>
@@ -60,7 +60,7 @@ I then found <a href="http://stackoverflow.com/questions/17648677/is-the-server-
 
 <p>Naturally, my next thoughts are <code>awesome! this works but can I automate this for next time?</code>. So I go to the documentation and of course it’s right <a href="https://github.com/hw-cookbooks/postgresql">there</a> in front of me. Adding these 2 lines does the exact same thing as I described above which means I am now fully automated.</p>
 
-<div class="highlight"><pre><code class="bash">node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;config&#39;</span><span class="o">][</span><span class="s1">&#39;listen_addresses&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;config&#39;</span><span class="o">][</span><span class="s1">&#39;listen_addresses&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
 node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;pg_hba&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="o">[{</span>:type <span class="o">=</span>&gt; <span class="s1">&#39;host&#39;</span>, :db <span class="o">=</span>&gt; <span class="s1">&#39;all&#39;</span>, :user <span class="o">=</span>&gt; <span class="s1">&#39;postgres&#39;</span>, :addr <span class="o">=</span>&gt; <span class="s1">&#39;IPADDRESS/32&#39;</span>, :method <span class="o">=</span>&gt; <span class="s1">&#39;md5&#39;</span><span class="o">}]</span></code></pre></div>
 
 </div>
@@ -71,7 +71,7 @@ node.default<span class="o">[</span><span class="s1">&#39;postgresql&#39;</span>
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

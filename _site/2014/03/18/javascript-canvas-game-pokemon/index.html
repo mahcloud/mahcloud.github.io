@@ -62,7 +62,7 @@
 
 <p>These are the image dimensions for the pokemon.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pokemon_dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
 	<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
@@ -85,7 +85,7 @@
 
 <p>Add this to your spawnMonster function.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">pokemon</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 <span class="nx">monsterImage</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;images/pokemon/&quot;</span><span class="o">+</span><span class="nx">pokemon</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">pokemon_dimensions</span><span class="p">[</span><span class="nx">pokemon</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span></code></pre></div>
@@ -104,7 +104,7 @@ slayMonster should be catchPokemon.</p>
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

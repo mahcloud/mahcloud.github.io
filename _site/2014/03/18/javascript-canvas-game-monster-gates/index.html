@@ -42,7 +42,7 @@
 	<div class="post-content"><p>Monsters should spawn randomly at gate opening in arena.
 First, add the gates array.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">gates</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
 		<span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">),</span>
@@ -51,7 +51,7 @@ First, add the gates array.</p>
 
 <p>Then we want to spawn a monster randomly.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">spawnMonster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="nx">gate</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
 	<span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">gates</span><span class="p">[</span><span class="nx">gate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
@@ -59,20 +59,20 @@ First, add the gates array.</p>
 
 <p>And change this in the slayMonster function</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>for</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>Added bonus, we can have the monster start at a spawn point by adding.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">spawnMonster</span><span class="p">();</span></code></pre></div>
 
 <p>And change the monster array values.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">monster</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
 <span class="nx">monster</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span></code></pre></div>
 
 <p>This means that the monster will be drawn off the screen before it is spawned.</p>
@@ -87,7 +87,7 @@ First, add the gates array.</p>
 		</div>
 
 		<footer id="footer">
-			<p class="copyright">Copyright &copy; 2014 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
 		</footer>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
