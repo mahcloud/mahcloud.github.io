@@ -1,0 +1,45 @@
+---
+layout: post
+title: "Single Table Inheritance for legacy databases"
+date: 2015-09-04 09:15:00
+---
+
+Single table inheritance is a pretty common practice among rails developers. It allows the developer to seperate a single object into seperate concepts while keeping the data consistently the same. For example you could seperate the logic between an admin and a customer, but the data for these two types of users is simply the same. The problem is that rails defaults this distinction into a database column named `type` and stores the data as a string of the class name. Well, my legacy PHP framework stored it in a database column named `typeID` with the data as a single character representation of the class name. 
+
+{% highlight ruby %}
+  self.inheritance\_column = :typeID
+{% endhighlight %}
+
+This tells the user model to use the `typeID` column as the single table inheritance base.
+
+{% highlight ruby %}
+  ADMIN\_TYPE = 'A'
+  CLIENT\_USER\_TYPE = 'C'
+  SUPER\_ADMIN\_TYPE = 'S'
+
+  TYPES\_MAP = {
+    ADMIN_TYPE => User::Admin,
+    CLIENT_USER_TYPE => User::ClientUser,
+    SUPER_ADMIN_TYPE => User::SuperAdmin
+  }
+
+  def self.find\_sti\_class(type\_name)
+    TYPES_MAP[type\_name] or super
+  end
+
+  def self.sti\_name
+    TYPES_MAP.invert[self]
+  end
+{% endhighlight %}
+
+This tells the user model what the single characters map to what classes in the rails framework.
+
+The only hicup I ran into was that instantiating and storing the subclass would think it also needed to be aware of subclasses. So, I added the following to all the subclasses.
+
+{% highlight ruby %}
+  self.inheritance\_column = :\_type\_disabled
+{% endhighlight %}
+
+[Where I got the idea][article]
+
+[article]: https://gist.github.com/vamdt/75aca125883a88a9f1fd

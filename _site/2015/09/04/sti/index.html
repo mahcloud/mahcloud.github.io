@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Single Table Inheritance for legacy databases</title>
+		<meta name="viewport" content="width=device-width">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<link href="/assets/css/style.css" rel="stylesheet" />
+		<link href="/assets/css/colors-dark.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header id="header">
+			<h1><a href="/"><i class="icon-sun"></i> Mike Hoffert</a></h1>
+			<p>Personal information for Michael Hoffert with work experience.</p>
+		</header>
+
+		<div id="page">
+			<div id="sidebar">
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/game">Game</a></li>
+						<li><a href="/about">About</a></li>
+						<li><a href="http://github.com/mahcloud" target="_blank">GitHub</a></li>
+						<li><a href="http://twitter.com/mahcloud" target="_blank">Twitter</a></li>
+						<li><a href="http://facebook.com/ff7heaven" target="_blank">Facebook</a></li>
+						<li><a href="/feed.xml">RSS Feed</a></li>
+					</ul>
+				</nav>
+			</div>
+
+			<div id="content">
+				<article class="post">
+	
+		<h1><a href="/2015/09/04/sti/">Single Table Inheritance for legacy databases</a></h1>
+	
+	<div class="post-content"><p>Single table inheritance is a pretty common practice among rails developers. It allows the developer to seperate a single object into seperate concepts while keeping the data consistently the same. For example you could seperate the logic between an admin and a customer, but the data for these two types of users is simply the same. The problem is that rails defaults this distinction into a database column named <code>type</code> and stores the data as a string of the class name. Well, my legacy PHP framework stored it in a database column named <code>typeID</code> with the data as a single character representation of the class name.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">self</span><span class="o">.</span><span class="n">inheritance</span><span class="p">\</span><span class="n">_column</span> <span class="o">=</span> <span class="ss">:typeID</span></code></pre></div>
+
+<p>This tells the user model to use the <code>typeID</code> column as the single table inheritance base.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ADMIN</span><span class="p">\</span><span class="n">_TYPE</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+  <span class="no">CLIENT</span><span class="p">\</span><span class="n">_USER</span><span class="p">\</span><span class="n">_TYPE</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
+  <span class="no">SUPER</span><span class="p">\</span><span class="n">_ADMIN</span><span class="p">\</span><span class="n">_TYPE</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+
+  <span class="no">TYPES</span><span class="p">\</span><span class="n">_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="no">ADMIN_TYPE</span> <span class="o">=&gt;</span> <span class="no">User</span><span class="o">::</span><span class="no">Admin</span><span class="p">,</span>
+    <span class="no">CLIENT_USER_TYPE</span> <span class="o">=&gt;</span> <span class="no">User</span><span class="o">::</span><span class="no">ClientUser</span><span class="p">,</span>
+    <span class="no">SUPER_ADMIN_TYPE</span> <span class="o">=&gt;</span> <span class="no">User</span><span class="o">::</span><span class="no">SuperAdmin</span>
+  <span class="p">}</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find</span><span class="p">\</span><span class="n">_sti</span><span class="p">\</span><span class="n">_class</span><span class="p">(</span><span class="n">type</span><span class="p">\</span><span class="n">_name</span><span class="p">)</span>
+    <span class="no">TYPES_MAP</span><span class="o">[</span><span class="n">type</span><span class="p">\</span><span class="n">_name</span><span class="o">]</span> <span class="ow">or</span> <span class="k">super</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">sti</span><span class="p">\</span><span class="n">_name</span>
+    <span class="no">TYPES_MAP</span><span class="o">.</span><span class="n">invert</span><span class="o">[</span><span class="nb">self</span><span class="o">]</span>
+  <span class="k">end</span></code></pre></div>
+
+<p>This tells the user model what the single characters map to what classes in the rails framework.</p>
+
+<p>The only hicup I ran into was that instantiating and storing the subclass would think it also needed to be aware of subclasses. So, I added the following to all the subclasses.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">self</span><span class="o">.</span><span class="n">inheritance</span><span class="p">\</span><span class="n">_column</span> <span class="o">=</span> <span class="p">:\</span><span class="n">_type</span><span class="p">\</span><span class="n">_disabled</span></code></pre></div>
+
+<p><a href="https://gist.github.com/vamdt/75aca125883a88a9f1fd">Where I got the idea</a></p>
+
+</div>
+	<p class="meta">Posted on <span class="postdate">Sep 04, 2015</span></p>
+</article>
+			</div>
+
+		</div>
+
+		<footer id="footer">
+			<p class="copyright">Copyright &copy; 2015 Mike Hoffert. Powered by <a href="http://jekyllrb.com">Jekyll</a>, theme by <a href="http://www.webmaster-source.com">Matt Harzewski</a></p>
+		</footer>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="/assets/js/jquery.mobilemenu.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$('#sidebar nav ul').mobileMenu({'topOptionText': 'Menu', 'prependTo': '#sidebar nav'});
+			});
+		</script>
+	</body>
+</html>
